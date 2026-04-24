@@ -1,0 +1,10 @@
+{
+  "name": "architecture-studio-documenter",
+  "version": "1.0.0",
+  "description": "Google Docs synchronization for Architecture Studio",
+  "main": "scripts/publish_to_gdocs.cjs",
+  "dependencies": {
+    "googleapis": "^126.0.0",
+    "marked": "^9.1.0"
+  }
+}

@@ -1,0 +1,6 @@
+.obsidian/
+.git/
+node_modules/
+!llm/
+!llm/changes/**
+!llm/discovery/**
