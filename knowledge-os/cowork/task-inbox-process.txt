@@ -1,0 +1,25 @@
+# KO · Inbox process — paste into Cowork → Scheduled tasks → Instructions
+# Working folder: OBSIDIAN_META
+# Name: KO · Inbox process
+#
+# Prerequisites (NOT part of Skillforge — install separately):
+#   classify skill  → ~/.claude/skills/classify/  (from choreokit or your Knowledge OS op-skills repo)
+#   core op-skills  → ~/.claude/skills/core/       (super-wiki-sync, folder-structure-sync)
+# Run `skillmanager knowledge-os` after `skillmanager audit` to verify skill paths.
+
+You are running the Knowledge OS inbox pipeline. Follow these files exactly:
+- ~/.claude/skills/classify/inbox-classifier.md — for any item not yet classified
+- ~/.claude/skills/classify/process-inbox.md — for moves (human confirmation required; you cannot auto-approve)
+
+Steps:
+1. Read OBSIDIAN_META/wiki/skills.md (sections: inbox-classifier, process-inbox) and OBSIDIAN_META/CLAUDE.md.
+2. List OBSIDIAN_META/inbox/ at depth 2. Identify:
+   (a) Top-level .md files missing a sidecar: for each, apply inbox-classifier rules and write a JSON file named {same-basename}.routing next to the source .md (schema: same fields as in process-inbox Phase A—source_file, intent, confidence, target_vault, target_path, sub_intent, reasoning, requires_confirmation).
+   (b) Subfolders: if a bundle has no _folder.routing, either classify the bundle per inbox-classifier (folder rules) and write _folder.routing JSON inside that folder, OR skip and report "needs human classification".
+3. If any .routing or _folder.routing exists, you MUST follow process-inbox: present each item for explicit approval. Do not move files unless the user replies with y or override. If this run is non-interactive and the user is not in chat, STOP after listing pending items and sidecars; do not move.
+4. After any successful moves, chain: op: folder-structure-sync for affected destination folder(s), then op: super-wiki-sync (see ~/.claude/skills/core/*.md). Never hand-edit meta/_os/index.md or auto-generated meta/wiki/* registry rows.
+5. Append summary lines to OBSIDIAN_META/inbox/.classify.log only in the same format as process-inbox.
+
+If the inbox is empty and no pending sidecars, report: Inbox is empty — nothing to process.
+
+# Before saving: replace OBSIDIAN_META with your path, e.g. /Users/you/Obsidian/meta

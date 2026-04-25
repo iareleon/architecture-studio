@@ -1,0 +1,279 @@
+name: Validate
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # -----------------------------------------------------------------------
+      # Script syntax checks (compile-only, no execution)
+      # -----------------------------------------------------------------------
+
+      - name: Syntax check — skillmanager.py
+        run: python3 -m py_compile scripts/skillmanager.py
+
+      - name: Syntax check — install.py
+        run: python3 -m py_compile scripts/install.py
+
+      - name: Syntax check — check_skill_names.py
+        run: python3 -m py_compile scripts/check_skill_names.py
+
+      - name: Syntax check — test_env_setup.py
+        run: python3 -m py_compile scripts/test_env_setup.py
+
+      - name: Syntax check — test_env_teardown.py
+        run: python3 -m py_compile scripts/test_env_teardown.py
+
+      # -----------------------------------------------------------------------
+      # Skills root layout — lifecycle dirs, README, or kebab-case skill dirs
+      # -----------------------------------------------------------------------
+
+      - name: Validate skills/ top-level layout
+        run: |
+          set -euo pipefail
+          errors=0
+          is_skill_name() {
+            local n="$1"
+            [[ "$n" =~ ^(review|deactivated|staging|decommissioned|sme|workflow)$ ]] && return 1
+            [[ "$n" =~ ^[a-z][a-z0-9-]+(-sys)?$ ]]
+          }
+          for path in skills/*; do
+            [[ -e "$path" ]] || continue
+            base=$(basename "$path")
+            [[ "$base" == .* ]] && continue
+            if [[ -f "$path" ]]; then
+              if [[ "$base" != "README.md" ]]; then
+                echo "FAIL: unexpected file under skills/: ${base}"
+                errors=$((errors + 1))
+              fi
+              continue
+            fi
+            if is_skill_name "$base"; then
+              continue
+            fi
+            echo "FAIL: unexpected directory under skills/: ${base}"
+            errors=$((errors + 1))
+          done
+          if [[ $errors -gt 0 ]]; then
+            echo "skills/ root may contain only: <kebab-skill-name>/, README.md"
+            exit 1
+          fi
+          echo "skills/ top-level layout OK."
+
+      # -----------------------------------------------------------------------
+      # Skill naming convention (Python script)
+      # -----------------------------------------------------------------------
+
+      - name: Validate skill directory naming
+        run: python3 scripts/check_skill_names.py
+
+      # -----------------------------------------------------------------------
+      # SKILL.md frontmatter — metadata: schema
+      # -----------------------------------------------------------------------
+
+      - name: Validate SKILL.md frontmatter
+        run: |
+          set -euo pipefail
+          errors=0
+
+          while IFS= read -r -d '' skill_md; do
+            dir_name=$(basename "$(dirname "$skill_md")")
+            expected_name="${dir_name}"
+            echo "Checking: $skill_md"
+
+            # name: must match directory name exactly
+            fm_name=$(grep -E '^name:' "$skill_md" 2>/dev/null | head -1 | sed 's/^name:[[:space:]]*//' || true)
+            if [[ -z "$fm_name" ]]; then
+              echo "  FAIL: 'name' field missing"
+              ((errors++)) || true
+            elif [[ "$fm_name" != "$expected_name" ]]; then
+              echo "  FAIL: name '${fm_name}' does not match folder name '${expected_name}'"
+              ((errors++)) || true
+            else
+              echo "  OK: name = ${fm_name}"
+            fi
+
+            # version: under metadata:
+            if grep -qE '^[[:space:]]+version:' "$skill_md" 2>/dev/null; then
+              echo "  OK: version present"
+            else
+              echo "  FAIL: 'version' field missing"
+              ((errors++)) || true
+            fi
+
+            # metadata: block
+            if grep -qE '^metadata:' "$skill_md" 2>/dev/null; then
+              echo "  OK: metadata block present"
+            else
+              echo "  FAIL: 'metadata:' block missing"
+              ((errors++)) || true
+            fi
+
+            # metadata.status (optional; if present must be known)
+            if grep -qE '^[[:space:]]+status:' "$skill_md" 2>/dev/null; then
+              st=$(awk '/^---/{c++} c==1 && /^[[:space:]]+status:/{gsub(/^[[:space:]]*status:[[:space:]]*/, ""); gsub(/["'\'']/, ""); print; exit}' "$skill_md" 2>/dev/null || true)
+              st=${st,,}
+              case "$st" in
+                active|staging|review|deactivated|decommissioned) echo "  OK: metadata.status = ${st}" ;;
+                *) echo "  FAIL: invalid metadata.status '${st}'"; ((errors++)) || true ;;
+              esac
+            else
+              echo "  OK: metadata.status omitted (defaults to active)"
+            fi
+
+            # description: at root level
+            if grep -qE '^description:' "$skill_md" 2>/dev/null; then
+              echo "  OK: description present"
+            else
+              echo "  FAIL: root-level 'description' field missing"
+              ((errors++)) || true
+            fi
+
+            # metadata.disable-model-invocation: true
+            if grep -qE '^[[:space:]]+disable-model-invocation:[[:space:]]*true' "$skill_md" 2>/dev/null; then
+              echo "  OK: metadata.disable-model-invocation: true"
+            else
+              echo "  FAIL: 'metadata.disable-model-invocation: true' missing"
+              ((errors++)) || true
+            fi
+
+          done < <(find skills -maxdepth 4 -name "SKILL.md" -not -path "*/workflows/*" -print0 2>/dev/null | sort -z)
+
+          if [[ $errors -gt 0 ]]; then
+            echo ""
+            echo "Frontmatter validation failed with ${errors} error(s)."
+            exit 1
+          fi
+          echo ""
+          echo "All SKILL.md files pass frontmatter validation."
+
+      # -----------------------------------------------------------------------
+      # Referenced files must exist
+      # -----------------------------------------------------------------------
+
+      - name: Validate referenced files exist
+        run: |
+          set -euo pipefail
+          errors=0
+
+          while IFS= read -r -d '' skill_md; do
+            skill_dir=$(dirname "$skill_md")
+            while IFS= read -r ref_path; do
+              full_path="${skill_dir}/${ref_path}"
+              if [[ ! -f "$full_path" ]]; then
+                echo "MISSING: ${skill_md} references '${ref_path}' but file not found at ${full_path}"
+                ((errors++)) || true
+              fi
+            done < <(grep -oE '`(references/[^`]+\.md)`' "$skill_md" 2>/dev/null | tr -d '`' || true)
+          done < <(find skills -name "SKILL.md" -not -path "*/workflows/*" -print0 2>/dev/null | sort -z)
+
+          if [[ $errors -gt 0 ]]; then
+            echo ""
+            echo "Referenced file check failed with ${errors} missing file(s)."
+            exit 1
+          fi
+          echo "All referenced files exist."
+
+      # -----------------------------------------------------------------------
+      # No personal data
+      # -----------------------------------------------------------------------
+
+      - name: Scan for personal paths and data
+        run: |
+          set -euo pipefail
+          patterns=('/home/leond' 'leond@' '/Users/leond' 'europe-west2')
+          errors=0
+
+          for pattern in "${patterns[@]}"; do
+            matches=$(grep -rn --include="*.md" --include="*.py" --include="*.yaml" \
+              --include="*.yml" "$pattern" . \
+              --exclude-dir='.git' \
+              --exclude-dir='.github' \
+              --exclude-dir='tests' \
+              --exclude='migration*.md' \
+              --exclude='HANDOVER.md' \
+              --exclude='plan.md' \
+              2>/dev/null || true)
+            if [[ -n "$matches" ]]; then
+              echo "PERSONAL DATA FOUND (pattern: ${pattern}):"
+              echo "$matches"
+              ((errors++)) || true
+            fi
+          done
+
+          if [[ $errors -gt 0 ]]; then
+            echo ""
+            echo "Personal data scan failed. Remove all personal paths before merging."
+            exit 1
+          fi
+          echo "No personal data found."
+
+      # -----------------------------------------------------------------------
+      # pytest tests
+      # -----------------------------------------------------------------------
+
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Run pytest tests
+        run: pytest tests/test_skillforge.py -v
+
+      # -----------------------------------------------------------------------
+      # Smoke tests
+      # -----------------------------------------------------------------------
+
+      - name: Smoke test — install to temp environment
+        run: |
+          set -euo pipefail
+          export SKILLMANAGER_DIR=/tmp/sf-test
+          echo -e "claude\n\n\n\n\n\n" | python3 scripts/install.py || true
+          export PATH="$HOME/.local/bin:$PATH"
+          SKILLMANAGER_DIR=/tmp/sf-test python3 scripts/skillmanager.py ls
+
+      - name: Smoke test — idempotency
+        run: |
+          set -euo pipefail
+          export SKILLMANAGER_DIR=/tmp/sf-test-idem
+          echo -e "claude\n\n\n\n\n\n" | python3 scripts/install.py || true
+          echo -e "claude\n\n\n\n\n\n" | python3 scripts/install.py || true
+          echo "Idempotency check passed."
+
+  # -----------------------------------------------------------------------
+  # LLM eval tests — requires ANTHROPIC_API_KEY secret
+  # Runs on push to main only (evals cost tokens; not needed on every PR)
+  # Skips gracefully if the secret is not configured
+  # -----------------------------------------------------------------------
+
+  evals:
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run LLM evals
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SKILLMANAGER_DIR: ${{ github.workspace }}
+        run: bash tests/run_evals.sh

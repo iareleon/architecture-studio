@@ -1,3 +1,7 @@
 .obsidian/
 node_modules/
 raw/reports/
+
+# Local-only configuration overrides (instance-specific IDs, secrets, credentials)
+# Keep *.local.md templates committed; fill real values in the .local.md sidecar
+skills/*/references/*.local.md

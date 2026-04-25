@@ -1,0 +1,19 @@
+#!/usr/bin/env python3
+"""pre-commit — skill naming convention check
+
+Installed by scripts/install.py into .git/hooks/pre-commit
+Run manually: python3 scripts/hooks/pre-commit
+"""
+
+import subprocess
+import sys
+from pathlib import Path
+
+repo_root = Path(
+    subprocess.check_output(["git", "rev-parse", "--show-toplevel"]).decode().strip()
+)
+sys.exit(
+    subprocess.call(
+        [sys.executable, str(repo_root / "scripts" / "check_skill_names.py"), "--staged"]
+    )
+)

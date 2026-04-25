@@ -1,0 +1,38 @@
+{
+  "directories": [
+    "llm",
+    "project",
+    {
+      "raw": [
+        "actions",
+        "assets",
+        "changes",
+        "decisions",
+        "discovery",
+        "reports"
+      ]
+    },
+    "skills"
+  ],
+  "mandatory_files": [
+    ".geminiignore",
+    ".gitignore",
+    "FIRST-BRAIN.md",
+    "README.md",
+    {
+      "llm": [
+        "folder-structure.md",
+        "install.md"
+      ],
+      "raw": [
+        "change-log.md",
+        "discovery-log.md",
+        {
+          "decisions": [
+            "decision-log.md"
+          ]
+        }
+      ]
+    }
+  ]
+}

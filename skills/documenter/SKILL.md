@@ -1,20 +1,31 @@
 ---
 name: documenter
-version: 1.0.0
-description: "Handles external document generation, publishing, and formats. Use for: Integrating with external document platforms (e.g., Google Docs) for publishing."
+description: Technical documents — router to templates and workflows (README, ADR, HLD, audit, update). Invoke to write, review, or extend docs.
+metadata:
+  version: "1.0"
+  disable-model-invocation: true
 ---
-## Core Responsibilities
+# Documenter (router)
 
-- **Google Docs Integration:** Generate and maintain synced Google Docs versions of local markdown files (like HLDs).
-- **Format Conversion:** Provide capabilities to adapt internal markdown documentation into external consumption formats (e.g., PDFs, Word docs) as future capabilities are introduced.
+**Main brain:** this file. Menu: `workflows/documenter-menu.md`. Analyst scaffolds: `references/analyst-templates/`.
 
-## Activation & Guardrails
+| User intent | Load |
+|-------------|------|
+| General write / review / update / extend | `workflows/documenter-menu.md` |
+| **Mermaid** only | `diagrammer` — `workflows/mermaid.md` |
+| **Diagram type** (C4, sequence, …) | `diagrammer` — `SKILL.md` |
+| New README | `workflows/documenter-readme` |
+| New ADR | `workflows/documenter-adr` |
+| Quality review | `workflows/documenter-audit` |
+| Update / extend section | `workflows/documenter-update` / `workflows/documenter-extend` |
 
-The documenter-creator skill can be activated in two ways:
-- **LLM CLI (Direct Execution):** Can be activated from within an LLM chat session contextually to directly generate or sync documents based on user requests.
+**File writes:** confirm **target path** with the user before writing.
 
-## Workflow
+## Standards (summary)
 
-1. **Publish to Google Docs:** When a user requests to publish a document (e.g., an HLD):
-    - Execute `node scripts/publish_to_gdocs.cjs <file_path>` to generate a synced Google Doc version.
-    - **Note:** Mermaid diagrams are NOT processed by this script. Ensure that a placeholder section (`[Diagram Placeholder - Insert from external source]`) is inserted in place of any Mermaid code blocks.
+- Docs-as-Code: versioned with the code. C4 hierarchy for architecture diagrams. ADRs for structural decisions. README reflects current system.
+- HLD: overview → container diagram → components → data flow → infrastructure → security → operations (detail in SME).
+- No `TODO`/`TBD` in published docs; diagrams must render; define terms on first use.
+- Research synthesis: as-is / to-be, personas when relevant; tie conclusions to ADRs. Use analyst templates for gaps and requirements.
+- **Workflow:** collect subject first; require approval for every path; delegate diagram work to `diagrammer`.
+- **Review:** structure, clarity, accuracy, discoverability, consistency with workspace standards.

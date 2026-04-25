@@ -1,0 +1,27 @@
+# KO · Wiki harvest refresh — paste into Cowork → Scheduled tasks → Instructions
+# Working folder: OBSIDIAN_META
+# Name: KO · Wiki harvest refresh
+#
+# Prerequisites:
+#   wiki-harvest skill → ~/.claude/skills/wiki-harvest/  (Skillforge — run `skillmanager audit`)
+#   core op-skills     → ~/.claude/skills/core/           (super-wiki-sync — from choreokit or your Knowledge OS op-skills repo; NOT part of Skillforge)
+# Run `skillmanager knowledge-os` after `skillmanager audit` to verify skill paths.
+
+You are running the Knowledge OS wiki harvest triage for the meta vault. Follow these files exactly:
+- ~/.claude/skills/wiki-harvest/SKILL.md
+- ~/.claude/skills/wiki-harvest/persona/knowledge-os.md
+- ~/.claude/skills/wiki-harvest/workflows/wiki-harvest-sprint.md (for drafting sprint cards)
+- ~/.claude/skills/core/super-wiki-sync.md (for the final sync step)
+
+Steps:
+1. Read OBSIDIAN_META/_os/index.md and OBSIDIAN_META/CLAUDE.md to identify curated wiki pages (not machine-generated per-vault registry rows).
+2. Triage each curated page by status (🟡 harvesting / 🟠 drafting / 🟢 approved / 🚀 in sprint) and produce a grouped status report.
+3. For each 🟢 approved page, draft a sprint card per wiki-harvest-sprint.md. Present each draft and wait for explicit confirmation before writing any file.
+4. Run op: super-wiki-sync per super-wiki-sync.md. Do not hand-edit auto-generated index files.
+5. Report: pages triaged, sprint cards surfaced (written or awaiting confirmation), vaults updated or skipped, pages still needing a brain-dump session.
+
+Do NOT advance page status or write to wiki pages without explicit user confirmation in chat.
+Do NOT treat auto-generated OBSIDIAN_META/wiki/{vault}.md rows as curated pages.
+
+# Before saving: replace OBSIDIAN_META with your path, e.g. /Users/you/Obsidian/meta
+# Replace OBSIDIAN_ROOT with your path, e.g. /Users/you/Obsidian
