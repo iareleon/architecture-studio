@@ -48,6 +48,7 @@ Central skill for all Knowledge OS operations: inbox processing, vault sync, wik
 3. Never advance a wiki page to 🟢 approved — user only.
 4. Never hand-edit auto-generated files: `_super-wiki.md`, `meta/wiki/{vault}.md`, `_structure.md`.
 5. Never write outside the current operation's target scope.
+6. `{vault}/raw/` is immutable and append-only — never modify or delete files there once placed. It is the source layer from which wiki content is derived. Only `vault-inbox-sync` may write to `raw/`.
 
 ## References
 

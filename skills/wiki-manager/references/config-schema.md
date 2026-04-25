@@ -113,6 +113,6 @@ vaults:
 
 ## Field notes
 
-- `target_subpath`: the `inbox/raw/` prefix means the file lands in the vault's raw inbox for user review, not directly in the vault's content. After user approval, `vault-inbox-sync` moves it to the final location using the same `target_subpath` as the final destination within the vault.
+- `target_subpath`: defined with an `inbox/raw/` prefix in the routing config so that `inbox-dispatch` places the file in the vault's staging area (`{vault}/inbox/raw/`) for user review. Before moving the file, `inbox-dispatch` rewrites this field in the frontmatter to strip the `inbox/` prefix (e.g. `inbox/raw/{ts}-soul.md` → `raw/{ts}-soul.md`). By the time `vault-inbox-sync` reads it, `target_subpath` already points to the final immutable `raw/` location within the vault.
 - Vaults with `inbox: false` are still discovered and indexed by `wiki-sync`. They just do not receive dispatched inbox files.
 - Add new vaults by appending to the `vaults` list and re-running any relevant operations.

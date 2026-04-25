@@ -37,7 +37,15 @@ Resolve `{ts}` in `target_subpath` to the current timestamp (`YYYYMMDD-HHMMSS`).
 
 Full destination: `{vault_path}/{target_subpath}`
 
-**2c — Move file**
+**2c — Rewrite frontmatter for vault-inbox-sync**
+
+Before moving the file, update its frontmatter `target_subpath` to the final vault location by stripping the leading `inbox/` segment.
+
+Example: `inbox/raw/20240101-120000-soul.md` → `raw/20240101-120000-soul.md`
+
+This allows `vault-inbox-sync` to use `target_subpath` directly as the final destination within the vault without further transformation.
+
+**2d — Move file**
 
 Create parent directories if they do not exist.
 

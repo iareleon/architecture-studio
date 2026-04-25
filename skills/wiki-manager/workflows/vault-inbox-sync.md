@@ -26,9 +26,11 @@ For each vault that has approved items:
 
 For each `.md` file in `{vault_path}/inbox/approved/`:
 
-Read `target_subpath` from frontmatter. This is the final destination within the vault (e.g. `raw/YYYYMMDD-HHMMSS-intent.md`).
+Read `target_subpath` from frontmatter. At this stage `inbox-dispatch` has already rewritten the field to the final vault location — it will be a `raw/` path, not an `inbox/raw/` path (e.g. `raw/20240101-120000-intent.md`).
 
-If `target_subpath` is missing: use `raw/{original-filename}` as fallback and flag.
+If `target_subpath` still starts with `inbox/`: strip the leading `inbox/` segment and flag for investigation (dispatch may have been run with an older version of the workflow).
+
+If `target_subpath` is missing entirely: use `raw/{original-filename}` as fallback and flag.
 
 **2b — Move to final destination**
 
@@ -57,3 +59,9 @@ vault-inbox-sync:
   Skipped (missing target): {N}
   → wiki-sync run for {N} changed vaults
 ```
+
+## Rules
+
+1. `{vault}/raw/` is immutable once written — never modify, rename, or delete a file there. It is the append-only source layer from which wiki content is derived.
+2. Always write to `raw/` via this workflow — never write to `raw/` directly from classify, dispatch, or harvest steps.
+3. If `target_subpath` incorrectly points into `inbox/` at this stage, strip the `inbox/` prefix and flag the file; do not abort the run.
