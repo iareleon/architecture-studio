@@ -10,7 +10,7 @@ todos:
     status: completed
   - id: phase-2
     content: "Phase 2: Test memory write, scope confirmation, and archive flows with diff + approval"
-    status: pending
+    status: completed
   - id: phase-3
     content: "Phase 3: Test memory-audit, memory-create, and memory-system-toggle workflows"
     status: pending
@@ -58,7 +58,7 @@ Update this table as each phase is completed. Mark the status column and add a o
 |-------|-------|--------|-----------------|
 | 0 | Environment Health Check | `done` | Fixed install_dir (old path → ~/.skillmanager), re-ran install.py, all 16 skills OK |
 | 1 | Skill Symlinks and Visibility | `done` | Skills visible in Cursor agent; symlinks match after ~/.skillmanager install |
-| 2 | Memory Skill: Basic Write + Approval Flow | `pending` | |
+| 2 | Memory Skill: Basic Write + Approval Flow | `done` | 2a: no-op on existing fact; 2b: global scope confirmed, wrote to install_dir/model.md; 2c: archive comment used, restored after |
 | 3 | Memory Skill: Audit + Create + Toggle | `pending` | |
 | 4 | Memory Routing: Per-Skill Persona Files | `pending` | |
 | 5 | Skill Manager: Skill Health | `pending` | |
@@ -129,7 +129,7 @@ In Cursor, attach skills from the skills picker. In Claude Code, skills load per
 
 **Goal:** Verify the end-to-end memory write cycle works correctly with diff + approval.
 
-The [`../../skills/memory/SKILL.md`](../../skills/memory/SKILL.md) core workflow:
+The [`../../skills/brain-manager/SKILL.md`](../../skills/brain-manager/SKILL.md) core workflow:
 1. Detect trigger phrase → identify target file → show diff → write only on "yes"
 
 **Test 2a — Project memory (CLAUDE.md)**
@@ -164,10 +164,10 @@ Expected:
 > **Gate 2:** Confirm write, scope confirmation, and archive flows all behave correctly and require approval at each step.
 
 **Phase 2 notes** _(fill in during testing)_:
-- [ ] 2a: project memory write triggered diff + approval
-- [ ] 2b: global memory flagged scope and required confirmation
-- [ ] 2c: removal used archive comment, did not silently delete
-- Findings:
+- [x] 2a: project memory write triggered diff + approval
+- [x] 2b: global memory flagged scope and required confirmation
+- [x] 2c: removal used archive comment, did not silently delete
+- Findings: global scope routes to `~/.skillmanager/model.md` (not `llm/*.md`); 2a correctly detected existing fact and skipped write
 
 ---
 
@@ -179,7 +179,7 @@ Expected:
 
 > "Run memory-audit — list all memory files and their contents."
 
-This invokes [`../../skills/memory/workflows/memory-audit.md`](../../skills/memory/workflows/memory-audit.md). Expected:
+This invokes [`../../skills/brain-manager/workflows/brain-audit.md`](../../skills/brain-manager/workflows/brain-audit.md). Expected:
 - Lists project `CLAUDE.md`, user `~/.claude/CLAUDE.md`, any `persona/*.md` files
 - Shows their contents or line counts; flags oversized files (>40 lines)
 
@@ -187,7 +187,7 @@ This invokes [`../../skills/memory/workflows/memory-audit.md`](../../skills/memo
 
 > "Create a new per-skill memory stub for the `development-engineer` skill, topic: python-preferences."
 
-This invokes [`../../skills/memory/workflows/memory-create.md`](../../skills/memory/workflows/memory-create.md). Expected:
+This invokes [`../../skills/brain-manager/workflows/brain-create.md`](../../skills/brain-manager/workflows/brain-create.md). Expected:
 - Proposes creating `development-engineer/persona/python-preferences.md` under your installed skills tree (e.g. `~/.skillmanager/skills/...`)
 - Shows the stub content, writes only on approval
 
@@ -195,7 +195,7 @@ This invokes [`../../skills/memory/workflows/memory-create.md`](../../skills/mem
 
 > "Show me how to toggle the memory skill between always-on and manual modes."
 
-This invokes [`../../skills/memory/workflows/memory-system-toggle.md`](../../skills/memory/workflows/memory-system-toggle.md). Expected:
+This invokes [`../../skills/brain-manager/workflows/brain-system-toggle.md`](../../skills/brain-manager/workflows/brain-system-toggle.md). Expected:
 - Explains the `system-skills-always-on.md` vs `system-skills-manual.md` persona files
 - Shows what would need to change, with your approval required before any edit
 

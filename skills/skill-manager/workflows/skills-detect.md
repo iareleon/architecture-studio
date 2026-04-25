@@ -58,7 +58,7 @@ deferred-on: YYYY-MM-DD
 1. Invoke skill-manager → load skills-create.md
 2. Select template based on type
 3. Define SKILL.md content based on trigger context above
-4. Create memory stub via memory
+4. Create memory stub via brain-manager
 5. Run: skillmanager audit
 ```
 

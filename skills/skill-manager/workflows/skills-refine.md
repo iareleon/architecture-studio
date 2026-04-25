@@ -74,5 +74,5 @@ Run: skillmanager audit   — to verify the changes pass all checks
 
 - Never reduce the functional content of a skill without understanding what it does.
 - If content needs to move to a `references/` file, create that file as part of the same approval.
-- If `memory-file` points at a missing file, either create the file (via `memory` workflow) or remove `metadata.memory-file` and fold content into `SKILL.md` / `persona/`.
+- If `memory-file` points at a missing file, either create the file (via `brain-manager` workflow) or remove `metadata.memory-file` and fold content into `SKILL.md` / `persona/`.
 - Validate the updated skill with `skillmanager audit` after writing.

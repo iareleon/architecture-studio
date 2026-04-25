@@ -290,9 +290,51 @@ def main() -> None:
             ok(f"Installed: {local_name} → {target}")
 
     # -----------------------------------------------------------------------
-    # Step 6 — Persona model.md
+    # Step 6 — Install FIRST-BRAIN and wire LLM context files
     # -----------------------------------------------------------------------
-    header("Step 6: Setting up persona file")
+    header("Step 6: Installing FIRST-BRAIN and wiring LLM context files")
+
+    first_brain_src = repo_root / "FIRST-BRAIN.md"
+    first_brain_dst = skillmanager_dir / "FIRST-BRAIN.md"
+
+    if not first_brain_src.exists():
+        warn(f"FIRST-BRAIN.md not found at {first_brain_src} — skipping context file setup.")
+    else:
+        if first_brain_dst.exists():
+            info(f"FIRST-BRAIN.md already installed: {first_brain_dst}")
+        else:
+            shutil.copy2(first_brain_src, first_brain_dst)
+            ok(f"Installed FIRST-BRAIN.md → {first_brain_dst}")
+
+        for llm in selected_llms:
+            ctx_file = _get_llm_context_file(llm)
+            ctx_file.parent.mkdir(parents=True, exist_ok=True)
+            if ctx_file.is_symlink():
+                current_target = ctx_file.resolve()
+                if current_target == first_brain_dst.resolve():
+                    info(f"{llm}: context file already correctly linked ({ctx_file})")
+                else:
+                    warn(
+                        f"{llm}: context file symlinks to a different target — relinking:\n"
+                        f"  was: {current_target}\n"
+                        f"  now: {first_brain_dst}"
+                    )
+                    if _safe_symlink(first_brain_dst, ctx_file):
+                        ok(f"{llm}: relinked context file → {first_brain_dst}")
+            elif ctx_file.exists():
+                warn(
+                    f"{llm}: context file exists as a real file ({ctx_file}).\n"
+                    f"  Back it up then re-run, or symlink manually:\n"
+                    f"  ln -sf {first_brain_dst} {ctx_file}"
+                )
+            else:
+                if _safe_symlink(first_brain_dst, ctx_file):
+                    ok(f"{llm}: created context file symlink → {first_brain_dst}")
+
+    # -----------------------------------------------------------------------
+    # Step 7 — Persona model.md
+    # -----------------------------------------------------------------------
+    header("Step 7: Setting up persona file")
 
     model_file = skillmanager_dir / "model.md"
     persona_src = repo_root / "skills" / "skill-manager" / "templates" / "persona" / "model.md"
@@ -334,9 +376,9 @@ def main() -> None:
                 ok(f"{llm}: added model.md reference to {ctx_file}")
 
     # -----------------------------------------------------------------------
-    # Step 7 — Install CLI binary
+    # Step 8 — Install CLI binary
     # -----------------------------------------------------------------------
-    header("Step 7: Installing Skill Forge CLI")
+    header("Step 8: Installing Skill Forge CLI")
 
     cli_src = script_dir / "skillmanager.py"
     if not cli_src.exists():
@@ -362,15 +404,15 @@ def main() -> None:
     ok(f"Installed CLI: {cli_binary}")
 
     # -----------------------------------------------------------------------
-    # Step 8 — Sync LLM symlinks
+    # Step 9 — Sync LLM symlinks
     # -----------------------------------------------------------------------
-    header("Step 8: Syncing LLM symlinks (skillmanager audit)")
+    header("Step 9: Syncing LLM symlinks (skillmanager audit)")
     _run_audit(cli_binary, skillmanager_dir)
 
     # -----------------------------------------------------------------------
-    # Step 9 — Ensure bin dir is in PATH
+    # Step 10 — Ensure bin dir is in PATH
     # -----------------------------------------------------------------------
-    header("Step 9: Configuring PATH")
+    header("Step 10: Configuring PATH")
 
     if IS_WINDOWS:
         info(
@@ -393,9 +435,9 @@ def main() -> None:
                 ok(f"Appended PATH export to {rc_file}")
 
     # -----------------------------------------------------------------------
-    # Step 10 — Install git hooks
+    # Step 11 — Install git hooks
     # -----------------------------------------------------------------------
-    header("Step 10: Installing git hooks")
+    header("Step 11: Installing git hooks")
 
     git_hooks_dir = repo_root / ".git" / "hooks"
     hooks_src_dir = script_dir / "hooks"
@@ -416,9 +458,9 @@ def main() -> None:
                 ok(f"Installed hook: {hook_src.name}")
 
     # -----------------------------------------------------------------------
-    # Step 11 — Generate install checksums
+    # Step 12 — Generate install checksums
     # -----------------------------------------------------------------------
-    header("Step 11: Recording install checksums")
+    header("Step 12: Recording install checksums")
 
     checksums_file = skillmanager_dir / ".checksums"
     install_version_file = skillmanager_dir / ".install-version"

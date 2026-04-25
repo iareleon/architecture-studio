@@ -15,6 +15,7 @@ Custom skills always take precedence. **Do NOT install any plugin listed as a co
 | `development-engineer` | `code-simplifier` | Partial overlap — code-simplifier focuses on refactoring only | Avoid — custom skill preferred |
 | `architect` | `code-review` | Partial overlap — code-review automates PR review agents | Avoid — custom skill preferred |
 | `tester` | `pr-review-toolkit` | Partial overlap — pr-review-toolkit automates PR-level test checks | Avoid — custom skill preferred |
+| `brain-manager` (formerly `memory`) | LLM built-in `/memory` command | Name conflict — shadowed native capability; renamed to avoid collision | **Renamed** |
 
 ---
 

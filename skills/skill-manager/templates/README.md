@@ -17,7 +17,7 @@ Copy these from the `skill-manager` skill (this directory) to scaffold new skill
 | `persona/system-skills-always-on.md` | System capabilities block (always-on install mode) |
 | `persona/system-skills-manual.md` | System capabilities block (manual install mode) |
 
-**Durable context:** author the main rules in `SKILL.md`; add `persona/<topic>.md` for distinct sub-topics; use project `CLAUDE.md` for workspace facts. Legacy per-skill `memory/baseline.md` is discouraged. Scaffolds for optional memory-style files: `skills/memory/references/scaffold-*.md`.
+**Durable context:** author the main rules in `SKILL.md`; add `persona/<topic>.md` for distinct sub-topics; use project `CLAUDE.md` for workspace facts. Legacy per-skill `memory/baseline.md` is discouraged. Scaffolds for optional memory-style files: `skills/brain-manager/references/scaffold-*.md`.
 
 ---
 

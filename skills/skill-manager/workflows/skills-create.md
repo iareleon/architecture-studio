@@ -123,7 +123,7 @@ Run: skillmanager audit
 ```
 
 Do not create symlinks inline — the CLI owns that operation.
-Offer to create a memory stub: ask the user to invoke `memory` for that.
+Offer to create a memory stub: ask the user to invoke `brain-manager` for that.
 
 ## Guidelines
 

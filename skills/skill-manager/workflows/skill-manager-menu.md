@@ -34,7 +34,7 @@ Load the relevant subflow only when the user's intent matches:
 - To retire a skill from the LLM, set `metadata.status: decommissioned` and run `skillmanager audit` (files stay on disk).
 - After authoring a skill, always end with: `Run: skillmanager audit`
 - Keep `SKILL.md` lean — move content >10 lines into `references/` or subflow files.
-- Memory scaffolding (stub creation, list, archive) is owned by `memory`.
+- Memory scaffolding (stub creation, list, archive) is owned by `brain-manager`.
 - **Authoring templates**: `templates/expertise-skill-template.md` and `templates/workflow-skill-template.md`; one primary capability per skill.
 - **Quality bar**: run `skillmanager audit` after substantive edits; for checklist-style audits, load the relevant file under `references/auditor-personas/`.
 

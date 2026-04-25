@@ -1,7 +1,7 @@
 <!-- system-skills: always-on -->
 ## System Capabilities (Always Active)
 
-> To switch to manual mode: invoke `/memory` → "toggle system skills to manual"
+> To switch to manual mode: invoke `/brain-manager` → "toggle system skills to manual"
 
 ### Skill Detection
 

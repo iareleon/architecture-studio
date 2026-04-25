@@ -1,11 +1,11 @@
 ---
-name: memory
+name: brain-manager
 description: Detects memory-change intent in user input and updates the correct workspace memory file with explicit user approval. Invoke directly or trigger automatically from natural language patterns.
 metadata:
-  version: "1.0"
+  version: "1.1"
   disable-model-invocation: true
 ---
-# Memory
+# Brain Manager
 
 **Main brain:** this file. Skills no longer use per-skill `memory/baseline.md` as a default; route durable facts to **project** or **persona** files (see table below) instead of a duplicate “layer” under every skill.
 
@@ -39,9 +39,9 @@ If the target is ambiguous, ask: project vs user-global vs which skill `persona/
 
 ## Scaffolding (stubs, list, archive, toggles)
 
-- Create stub: `workflows/memory-create.md`
-- List / view / archive: `workflows/memory-audit.md`
-- System skills mode: `workflows/memory-system-toggle.md`
+- Create stub: `workflows/brain-create.md`
+- List / view / archive: `workflows/brain-audit.md`
+- System skills mode: `workflows/brain-system-toggle.md`
 
 ## Other
 

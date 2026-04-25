@@ -7,7 +7,7 @@ metadata:
 ---
 # Skill Manager
 
-**Single responsibility:** create, list, audit, and lifecycle-manage **skills** under `skills/` with the `skillmanager` CLI. Memory edits → `memory` skill. Knowledge base routing → `vault-paths` or your configured knowledge base skill.
+**Single responsibility:** create, list, audit, and lifecycle-manage **skills** under `skills/` with the `skillmanager` CLI. Memory edits → `brain-manager` skill. Knowledge base routing → `vault-paths` or your configured knowledge base skill.
 
 ## Global Rule — applies to every skill and agent
 
@@ -45,5 +45,6 @@ metadata:
 - After authoring: `Run: skillmanager audit`.
 - No personal data, paths, or credentials in any SKILL.md.
 - **Templates:** `templates/expertise-skill-template.md`, `templates/workflow-skill-template.md`.
+- Skill names must not shadow LLM built-in commands or native capabilities (e.g. `memory`, `browser`, `search`). Before finalising a name, check `references/marketplace-overlap.md` and run `skillmanager ls`; rename before activation if a conflict is found.
 
 CLI and subflow details: `workflows/skill-manager-menu.md`.

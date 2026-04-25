@@ -21,7 +21,7 @@ Show the current mode and the proposed change:
 
 ```
 Current mode: always-on (system skills are active every session)
-New mode:     manual    (invoke /skill-manager or /memory when needed)
+New mode:     manual    (invoke /skill-manager or /brain-manager when needed)
 
 This will replace the System Capabilities block in model.md.
 The change takes effect in the next session.
