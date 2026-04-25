@@ -1,0 +1,8 @@
+# KO · Inbox dispatch — paste into Cowork → Scheduled tasks → Instructions
+# Working folder: OBSIDIAN_META
+# Name: KO · Inbox dispatch
+
+Read ~/.claude/skills/wiki-manager/workflows/inbox-dispatch.md
+OBSIDIAN_META=<your path>
+
+# Before saving: replace OBSIDIAN_META with your path, e.g. /Users/you/Obsidian/meta

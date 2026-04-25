@@ -296,3 +296,102 @@ def test_switching_to_review_removes_staging_symlinks(env):
     assert result.returncode == 0
     assert not staging_link.is_symlink()
     assert not (env["claude_skills"] / "test-skill").is_symlink()
+
+
+# ---------------------------------------------------------------------------
+# orphan auto-removal (formerly)
+# ---------------------------------------------------------------------------
+
+def add_skill_with_formerly(skills_dir: Path, name: str, formerly: str) -> Path:
+    """Add a skill that declares a formerly field, replacing an old name."""
+    skill_dir = skills_dir / name
+    skill_dir.mkdir(parents=True, exist_ok=True)
+    (skill_dir / "SKILL.md").write_text(
+        f"---\n"
+        f"name: {name}\n"
+        f"description: Renamed skill fixture.\n"
+        f"metadata:\n"
+        f'  version: "1.0"\n'
+        f"  formerly: {formerly}\n"
+        f"  disable-model-invocation: true\n"
+        f"---\n\n# {name.replace('-', ' ').title()}\n",
+        encoding="utf-8",
+    )
+    return skill_dir
+
+
+def test_audit_auto_removes_orphan_matching_formerly(env):
+    """Orphan symlink whose name matches a 'formerly' field is auto-removed."""
+    # Simulate an old skill symlink (orphan — no backing dir)
+    old_link = env["claude_skills"] / "old-skill"
+    old_link.symlink_to(env["skills_dir"] / "old-skill")
+
+    # New skill declares formerly: old-skill
+    add_skill_with_formerly(env["skills_dir"], "new-skill", "old-skill")
+
+    result = run_skillmanager(["audit"], env)
+    assert result.returncode == 0
+    assert not old_link.exists(), "Orphan symlink should have been removed"
+    assert "Removed orphan symlink" in result.stdout
+    assert (env["claude_skills"] / "new-skill").is_symlink()
+
+
+def test_audit_dry_run_does_not_remove_orphan(env):
+    """--dry-run previews orphan removal without deleting anything."""
+    old_link = env["claude_skills"] / "old-skill"
+    old_link.symlink_to(env["skills_dir"] / "old-skill")
+
+    add_skill_with_formerly(env["skills_dir"], "new-skill", "old-skill")
+
+    result = run_skillmanager(["audit", "--dry-run"], env)
+    assert result.returncode == 0
+    assert old_link.is_symlink(), "Orphan symlink must survive in dry-run mode"
+    assert "dry-run" in result.stdout
+
+
+def test_audit_flags_unknown_orphan_for_manual_review(env):
+    """Orphan with no matching 'formerly' field is flagged, not removed."""
+    unknown_link = env["claude_skills"] / "mystery-skill"
+    unknown_link.symlink_to(env["skills_dir"] / "mystery-skill")
+
+    add_test_skill(env["skills_dir"], "unrelated-skill")
+
+    result = run_skillmanager(["audit"], env)
+    assert result.returncode == 0
+    assert unknown_link.is_symlink(), "Unknown orphan must not be auto-removed"
+    assert "ORPHAN" in result.stderr
+
+
+def test_update_removes_formerly_named_skill_dir(env):
+    """update --source removes the old skill dir when a new skill declares formerly."""
+    import shutil
+
+    # Simulate an old installed skill dir
+    old_dir = env["skills_dir"] / "old-skill"
+    old_dir.mkdir()
+    (old_dir / "SKILL.md").write_text(
+        "---\nname: old-skill\ndescription: Old.\nmetadata:\n  version: \"1.0\"\n---\n",
+        encoding="utf-8",
+    )
+
+    # Source tree has the replacement skill
+    source_root = env["skillmanager_dir"].parent / "source"
+    source_skills = source_root / "skills"
+    source_skills.mkdir(parents=True)
+    new_src = source_skills / "new-skill"
+    new_src.mkdir()
+    (new_src / "SKILL.md").write_text(
+        "---\nname: new-skill\ndescription: Renamed.\nmetadata:\n  version: \"1.0\"\n  formerly: old-skill\n---\n",
+        encoding="utf-8",
+    )
+
+    result = run_skillmanager(["update", "--source", str(source_root)], env)
+    assert result.returncode == 0
+    assert not old_dir.exists(), "Old skill dir should be removed by update"
+    assert (env["skills_dir"] / "new-skill").is_dir()
+    assert "Renamed: 1" in result.stdout
+
+    # formerly tag must be stripped from the installed SKILL.md after rename
+    installed_text = (env["skills_dir"] / "new-skill" / "SKILL.md").read_text(encoding="utf-8")
+    assert "formerly" not in installed_text, "formerly tag should be removed after successful rename"
+    assert "Removed 'formerly' tag" in result.stdout

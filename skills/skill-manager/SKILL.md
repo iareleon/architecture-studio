@@ -7,7 +7,7 @@ metadata:
 ---
 # Skill Manager
 
-**Single responsibility:** create, list, audit, and lifecycle-manage **skills** under `skills/` with the `skillmanager` CLI. Memory edits → `brain-manager` skill. Knowledge base routing → `vault-paths` or your configured knowledge base skill.
+**Single responsibility:** create, list, audit, and lifecycle-manage **skills** under `skills/` with the `skillmanager` CLI. Memory edits → `brain-manager` skill. Knowledge base routing → `wiki-manager` or your configured knowledge base skill.
 
 ## Global Rule — applies to every skill and agent
 

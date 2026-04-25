@@ -333,6 +333,87 @@ def read_metadata_status(skill_md: Path) -> str:
     return ""
 
 
+def read_metadata_formerly(skill_md: Path) -> str:
+    """Extract metadata.formerly from SKILL.md frontmatter."""
+    if not skill_md.exists():
+        return ""
+    try:
+        text = skill_md.read_text(encoding="utf-8")
+    except OSError:
+        return ""
+
+    delim_count = 0
+    in_metadata = False
+
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped == "---":
+            delim_count += 1
+            if delim_count > 1:
+                break
+            continue
+        if delim_count < 1:
+            continue
+        if stripped == "metadata:":
+            in_metadata = True
+            continue
+        if in_metadata:
+            m = re.match(r"^\s+formerly:\s*(.+)", line)
+            if m:
+                return m.group(1).strip().strip("\"'")
+            if line and not line[0].isspace():
+                in_metadata = False
+
+    return ""
+
+
+def strip_metadata_formerly(skill_md: Path) -> bool:
+    """Remove the metadata.formerly line from SKILL.md frontmatter. Returns True if changed."""
+    if not skill_md.exists():
+        return False
+    try:
+        text = skill_md.read_text(encoding="utf-8")
+    except OSError:
+        return False
+
+    lines = text.splitlines(keepends=True)
+    out = []
+    delim_count = 0
+    in_metadata = False
+    removed = False
+
+    for line in lines:
+        stripped = line.strip()
+        if stripped == "---":
+            delim_count += 1
+            if delim_count > 1:
+                in_metadata = False
+            out.append(line)
+            continue
+        if delim_count < 1:
+            out.append(line)
+            continue
+        if stripped == "metadata:":
+            in_metadata = True
+            out.append(line)
+            continue
+        if in_metadata:
+            if re.match(r"^\s+formerly:\s*.+", line):
+                removed = True
+                continue  # drop this line
+            if line.rstrip() and not line[0].isspace():
+                in_metadata = False
+        out.append(line)
+
+    if not removed:
+        return False
+    try:
+        skill_md.write_text("".join(out), encoding="utf-8")
+    except OSError:
+        return False
+    return True
+
+
 def skill_status_from_dir(d: Path) -> str:
     """Return canonical status: active|staging|review|deactivated|decommissioned|invalid."""
     raw = read_metadata_status(d / "SKILL.md").lower()
@@ -564,10 +645,14 @@ def cmd_status(_args: list[str]) -> None:
 # Command: audit
 # ---------------------------------------------------------------------------
 
-def cmd_audit(_args: list[str]) -> None:
+def cmd_audit(args: list[str]) -> None:
+    dry_run = "--dry-run" in args
     skills_dir = _get_skills_dir()
     if not skills_dir.is_dir():
         die(f"Skills directory not found: {skills_dir} — run 'install.py' first.")
+
+    if dry_run:
+        info("Dry-run mode — no changes will be written.")
 
     fixed = 0
     flagged = 0
@@ -589,22 +674,30 @@ def cmd_audit(_args: list[str]) -> None:
                 elif link.resolve() != d.resolve():
                     needs_fix = True
             if needs_fix:
-                print(f"  Fixing symlinks for active skill: {name}")
-                create_symlinks(name, d)
+                if dry_run:
+                    print(f"  [dry-run] Would fix symlinks for active skill: {name}")
+                else:
+                    print(f"  Fixing symlinks for active skill: {name}")
+                    create_symlinks(name, d)
                 fixed += 1
             else:
                 print(f"  OK: {name}")
-            remove_staging_symlinks(name)
+            if not dry_run:
+                remove_staging_symlinks(name)
 
         elif st == "staging":
             removed_prod = False
             for ld in prod_dirs:
                 link = ld / name
                 if link.is_symlink():
-                    link.unlink()
+                    if not dry_run:
+                        link.unlink()
                     removed_prod = True
             if removed_prod:
-                print(f"  Removed stale production symlinks: {name}")
+                if dry_run:
+                    print(f"  [dry-run] Would remove stale production symlinks: {name}")
+                else:
+                    print(f"  Removed stale production symlinks: {name}")
                 fixed += 1
 
             staging_fix = False
@@ -615,8 +708,11 @@ def cmd_audit(_args: list[str]) -> None:
                 elif link.resolve() != d.resolve():
                     staging_fix = True
             if staging_fix:
-                print(f"  Fixing staging symlinks for: {name}")
-                create_staging_symlinks(name, d)
+                if dry_run:
+                    print(f"  [dry-run] Would fix staging symlinks for: {name}")
+                else:
+                    print(f"  Fixing staging symlinks for: {name}")
+                    create_staging_symlinks(name, d)
                 fixed += 1
             else:
                 print(f"  OK (staged): {name}")
@@ -626,20 +722,42 @@ def cmd_audit(_args: list[str]) -> None:
             for ld in prod_dirs + stage_dirs:
                 link = ld / name
                 if link.is_symlink():
-                    link.unlink()
+                    if not dry_run:
+                        link.unlink()
                     removed = True
             if removed:
-                print(f"  Removed stale symlinks: {name} ({st})")
+                if dry_run:
+                    print(f"  [dry-run] Would remove stale symlinks: {name} ({st})")
+                else:
+                    print(f"  Removed stale symlinks: {name} ({st})")
                 fixed += 1
 
     print(f"\n{BOLD}=== Orphan Symlink Check ==={RESET}")
+
+    # Build formerly map: {old_name: new_skill_dir_name} from all installed skills
+    formerly_map: dict[str, str] = {}
+    for skill_dir in list_all_skill_dirs():
+        old_name = read_metadata_formerly(skill_dir / "SKILL.md")
+        if old_name:
+            formerly_map[old_name] = skill_dir.name
+
     for link_dir in _get_llm_skill_dirs() + _get_staging_dirs():
         if not link_dir.is_dir():
             continue
         for link in link_dir.iterdir():
             if not link.is_symlink():
                 continue
-            if not (skills_dir / link.name).is_dir():
+            if (skills_dir / link.name).is_dir():
+                continue
+            if link.name in formerly_map:
+                new_name = formerly_map[link.name]
+                if dry_run:
+                    info(f"  [dry-run] Would remove orphan (renamed to '{new_name}'): {link}")
+                else:
+                    link.unlink()
+                    ok(f"  Removed orphan symlink (renamed to '{new_name}'): {link}")
+                fixed += 1
+            else:
                 warn(f"  ORPHAN in {link_dir}: '{link.name}' has no matching skill directory")
                 flagged += 1
 
@@ -655,11 +773,15 @@ def cmd_audit(_args: list[str]) -> None:
             flagged += errs
 
     print(f"\n{BOLD}=== SME Context Regeneration ==={RESET}")
-    _regen_sme_context()
-    ok("SME context.md files updated.")
+    if dry_run:
+        info("  [dry-run] Skipping SME context regeneration.")
+    else:
+        _regen_sme_context()
+        ok("SME context.md files updated.")
 
     print()
-    ok(f"Audit complete. Fixed: {fixed}. Flagged for manual review: {flagged}.")
+    suffix = " (dry-run — no changes written)" if dry_run else ""
+    ok(f"Audit complete{suffix}. Fixed: {fixed}. Flagged for manual review: {flagged}.")
 
 
 # ---------------------------------------------------------------------------
@@ -713,6 +835,89 @@ def cmd_doctor(_args: list[str]) -> None:
 
 
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Obsidian config helpers
+# ---------------------------------------------------------------------------
+
+def _get_obsidian_root() -> Path:
+    """Resolve OBSIDIAN_ROOT: config.yaml > env var > ~/Obsidian."""
+    cfg = _load_config()
+    obs_cfg = cfg.get("obsidian", {})
+    if isinstance(obs_cfg, dict):
+        raw = obs_cfg.get("root", "")
+        if raw:
+            return _expand(raw)
+    env = os.environ.get("OBSIDIAN_ROOT", "")
+    if env:
+        return _expand(env)
+    return _HOME / "Obsidian"
+
+
+def _get_obsidian_meta() -> Path:
+    """Resolve OBSIDIAN_META: config.yaml > env var > <root>/meta."""
+    cfg = _load_config()
+    obs_cfg = cfg.get("obsidian", {})
+    if isinstance(obs_cfg, dict):
+        raw = obs_cfg.get("meta", "")
+        if raw:
+            return _expand(raw)
+    env = os.environ.get("OBSIDIAN_META", "")
+    if env:
+        return _expand(env)
+    return _get_obsidian_root() / "meta"
+
+
+def _get_obsidian_vaults() -> list[dict]:
+    """Return vault list from config.yaml obsidian.vaults (may be empty list)."""
+    cfg = _load_config()
+    obs_cfg = cfg.get("obsidian", {})
+    if isinstance(obs_cfg, dict):
+        vaults = obs_cfg.get("vaults", [])
+        if isinstance(vaults, list):
+            return vaults
+    return []
+
+
+def _write_obsidian_config(root: Path, meta: Path, vaults: list[dict]) -> None:
+    """Write/replace the obsidian: block in config.yaml."""
+    config_file = _get_config_file()
+    if not config_file.exists():
+        die("config.yaml not found — run install.py first.")
+
+    lines = config_file.read_text(encoding="utf-8").splitlines()
+
+    # Remove existing obsidian: block (header line + all indented children)
+    new_lines: list[str] = []
+    skip = False
+    for line in lines:
+        stripped = line.strip()
+        indent = len(line) - len(line.lstrip())
+        if stripped == "obsidian:":
+            skip = True
+            continue
+        if skip and (indent > 0 or not stripped or stripped.startswith("#")):
+            continue
+        skip = False
+        new_lines.append(line)
+
+    # Build new obsidian: block
+    block = ["obsidian:"]
+    block.append(f"  root: {root}")
+    block.append(f"  meta: {meta}")
+    if vaults:
+        block.append("  vaults:")
+        for v in vaults:
+            block.append(f"    - name: {v['name']}")
+            block.append(f"      path: {v['path']}")
+            purpose = v.get("purpose", "")
+            if purpose:
+                block.append(f"      purpose: \"{purpose}\"")
+
+    new_lines.extend(block)
+    config_file.write_text("\n".join(new_lines) + "\n", encoding="utf-8")
+
+
+# ---------------------------------------------------------------------------
 # Command: knowledge-os
 # ---------------------------------------------------------------------------
 
@@ -720,10 +925,15 @@ def cmd_knowledge_os(_args: list[str]) -> None:
     print(f"\n{BOLD}=== Knowledge OS (meta vault) check ==={RESET}\n")
     issues = 0
 
-    obs_root = _expand(os.environ.get("OBSIDIAN_ROOT", str(_HOME / "Obsidian")))
-    obs_meta_env = os.environ.get("OBSIDIAN_META", "")
-    obs_meta = _expand(obs_meta_env) if obs_meta_env else obs_root / "meta"
+    obs_root = _get_obsidian_root()
+    obs_meta = _get_obsidian_meta()
     choreokit_env = os.environ.get("CHOREOKIT_DIR", "")
+
+    # Show config source
+    cfg = _load_config()
+    obs_cfg = cfg.get("obsidian", {})
+    source = "config.yaml" if isinstance(obs_cfg, dict) and obs_cfg.get("root") else "env / default"
+    print(f"  Config source: {source}  (run 'skillmanager vaults sync' to bind)")
 
     def ko_check(label: str, result: bool, ok_msg: str, fail_msg: str) -> None:
         nonlocal issues
@@ -783,6 +993,149 @@ def cmd_knowledge_os(_args: list[str]) -> None:
         ok("knowledge-os: no symlink/layout issues.")
     else:
         warn(f"knowledge-os: {issues} note(s) — run 'skillmanager audit' or adjust env vars.")
+
+
+# ---------------------------------------------------------------------------
+# Command: vaults
+# ---------------------------------------------------------------------------
+
+def _has_governance_markers(vault_dir: Path) -> bool:
+    """A vault opts into framework governance by having both CLAUDE.md and _os/index.md."""
+    return (vault_dir / "CLAUDE.md").exists() and (vault_dir / "_os" / "index.md").exists()
+
+
+def _read_obsidian_registry() -> list[Path]:
+    """Return vault paths from the Obsidian app registry (macOS only)."""
+    import json as _json
+    registry_path = _HOME / "Library" / "Application Support" / "obsidian" / "obsidian.json"
+    paths: list[Path] = []
+    if registry_path.exists():
+        try:
+            data = _json.loads(registry_path.read_text())
+            for entry in data.get("vaults", {}).values():
+                p = entry.get("path", "")
+                if p:
+                    paths.append(Path(p))
+        except Exception:
+            pass
+    return paths
+
+
+def cmd_vaults(args: list[str]) -> None:
+    subcmd = args[0] if args else "list"
+
+    if subcmd == "sync":
+        _vaults_sync()
+    else:
+        _vaults_list()
+
+
+def _vaults_list() -> None:
+    obs_root = _get_obsidian_root()
+    configured = {Path(v["path"]): v for v in _get_obsidian_vaults()}
+
+    print(f"\n{BOLD}=== Obsidian vaults — {obs_root} ==={RESET}")
+    print(f"  Governance marker: CLAUDE.md + _os/index.md in vault root\n")
+
+    if not obs_root.is_dir():
+        warn(f"OBSIDIAN_ROOT does not exist: {obs_root}")
+        print("  Set OBSIDIAN_ROOT or run 'skillmanager vaults sync' after creating the directory.")
+        return
+
+    subdirs = sorted(p for p in obs_root.iterdir() if p.is_dir())
+    governed = [d for d in subdirs if _has_governance_markers(d)]
+    personal = [d for d in subdirs if not _has_governance_markers(d)]
+
+    # ── Governed vaults ──
+    print(f"  {BOLD}Governed vaults{RESET} (CLAUDE.md + _os/index.md present)")
+    if governed:
+        for d in governed:
+            in_cfg = d in configured
+            cfg_tag = f"  {GREEN}registered{RESET}" if in_cfg else f"  {YELLOW}not in config — run 'vaults sync'{RESET}"
+            print(f"    {d.name}{cfg_tag}")
+    else:
+        print(f"    {YELLOW}none found{RESET} — add CLAUDE.md + _os/index.md to a vault to bring it under governance")
+
+    # ── Config drift: registered but markers now missing ──
+    drift = [p for p in configured if p not in set(governed)]
+    if drift:
+        print(f"\n  {BOLD}{YELLOW}Drift — registered but governance markers missing:{RESET}")
+        for p in drift:
+            print(f"    {p.name}  {YELLOW}(CLAUDE.md or _os/index.md removed){RESET}")
+
+    # ── Personal vaults ──
+    print(f"\n  {BOLD}Personal vaults{RESET} (framework-invisible — no governance markers)")
+    if personal:
+        for d in personal:
+            obs_marker = f"  {GREEN}obsidian app vault{RESET}" if (d / ".obsidian").is_dir() else ""
+            print(f"    {d.name}{obs_marker}")
+        print(f"\n  To bring a personal vault under governance, add to its root:")
+        print(f"    CLAUDE.md         agent rules for the vault")
+        print(f"    _os/index.md      Knowledge OS wiki registry entry")
+        print(f"  Use the onboard task: knowledge-os/cowork/task-vault-onboard.txt")
+    else:
+        print("    none")
+
+    print()
+    print(f"  Run '{BOLD}skillmanager vaults sync{RESET}' to register governed vaults in config.yaml")
+    print()
+
+
+def _vaults_sync() -> None:
+    obs_root = _get_obsidian_root()
+    obs_meta = _get_obsidian_meta()
+
+    print(f"\n{BOLD}=== Vault sync — bind governed vaults to config.yaml ==={RESET}\n")
+    print(f"  OBSIDIAN_ROOT : {obs_root}")
+    print(f"  OBSIDIAN_META : {obs_meta}\n")
+
+    if not obs_root.is_dir():
+        die(f"OBSIDIAN_ROOT does not exist: {obs_root}")
+
+    # Collect vaults that carry both governance markers
+    governed: list[dict] = []
+    for d in sorted(obs_root.iterdir()):
+        if d.is_dir() and _has_governance_markers(d):
+            governed.append({"name": d.name, "path": str(d)})
+
+    if not governed:
+        print(f"  {YELLOW}No governed vaults found under OBSIDIAN_ROOT.{RESET}")
+        print("  A vault opts in by having both CLAUDE.md and _os/index.md in its root.")
+        return
+
+    # Merge with existing config (preserve purpose if already set)
+    existing = {v["name"]: v for v in _get_obsidian_vaults()}
+    merged: list[dict] = []
+    for v in governed:
+        existing_entry = existing.get(v["name"], {})
+        merged.append({
+            "name": v["name"],
+            "path": v["path"],
+            "purpose": existing_entry.get("purpose", ""),
+        })
+
+    print(f"  {len(merged)} governed vault(s) will be written to config.yaml:\n")
+    for v in merged:
+        marker = f"{GREEN}+{RESET}" if v["name"] not in existing else " "
+        purpose_str = f"  — {v['purpose']}" if v.get("purpose") else ""
+        print(f"    {marker} {v['name']}{purpose_str}")
+
+    removed = [name for name in existing if name not in {v["name"] for v in merged}]
+    if removed:
+        print(f"\n  {YELLOW}Will be removed (markers no longer present):{RESET}")
+        for name in removed:
+            print(f"    - {name}")
+
+    print(f"\n  obsidian.root → {obs_root}")
+    print(f"  obsidian.meta → {obs_meta}")
+
+    answer = input("\n  Write to config.yaml? [yes/no]: ").strip().lower()
+    if answer not in ("yes", "y"):
+        print("  Aborted — no changes made.")
+        return
+
+    _write_obsidian_config(obs_root, obs_meta, merged)
+    ok(f"config.yaml updated — {len(merged)} governed vault(s) bound.")
 
 
 # ---------------------------------------------------------------------------
@@ -1199,15 +1552,33 @@ def cmd_update(args: list[str]) -> None:
             warn(f"Staged (customised): {rel}")
             staged += 1
 
+    # Handle renames: remove old skill dirs for skills that declare a 'formerly' field
+    renamed = 0
+    for skill_dir in sorted(skills_dir.iterdir()):
+        if not skill_dir.is_dir():
+            continue
+        old_name = read_metadata_formerly(skill_dir / "SKILL.md")
+        if not old_name:
+            continue
+        old_dir = skills_dir / old_name
+        if old_dir.is_dir():
+            shutil.rmtree(old_dir)
+            ok(f"Removed renamed skill dir: {old_name} → {skill_dir.name}")
+            if strip_metadata_formerly(skill_dir / "SKILL.md"):
+                ok(f"Removed 'formerly' tag from {skill_dir.name}/SKILL.md")
+            renamed += 1
+
     _regen_sme_context()
     version_file.write_text(
         datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ") + "\n", encoding="utf-8"
     )
 
     print()
-    ok(f"Update complete. Updated in place: {updated}. Staged for review: {staged}.")
+    ok(f"Update complete. Updated in place: {updated}. Staged for review: {staged}. Renamed: {renamed}.")
     if staged > 0:
         info("Run 'skillmanager staging ls' to review staged updates.")
+    if renamed > 0:
+        info("Run 'skillmanager audit' to update LLM symlinks for renamed skills.")
 
 
 # ---------------------------------------------------------------------------
@@ -1684,6 +2055,7 @@ def _usage() -> str:
   lint [file]            Check markdown quality
   doctor                 Self-check paths, tools, permissions, and PATH
   knowledge-os           Check Obsidian meta layout + wiki/vault skills symlinks
+  vaults                 List governed vs personal vaults (add 'sync' to bind to config.yaml)
   config                 Show current configuration
   config set <k> <v>     Update a configuration value
   memory-help            Guide to memory files and token costs
@@ -1711,7 +2083,7 @@ def _usage() -> str:
   git repo-rename        Rename a repository and update the local remote URL
   git <other> [args]     Any other git command passed through directly
 
-  update --source <path> Apply skill updates from a directory; stages customised files
+  update --source <path> Apply skill updates from a directory; handles renames via metadata.formerly
   uninstall              Remove symlinks, binary, and optionally all skill data
 
 {BOLD}SKILL LOCATIONS{RESET}
@@ -1767,16 +2139,31 @@ Interactively removes Skill Forge from the system:
 Requires typing 'uninstall' to confirm. Skill data is never deleted without
 a second explicit confirmation.""")
     elif subcmd in ("audit", "sync"):
-        print(f"""{BOLD}skillmanager audit{RESET} (alias: {BOLD}skillmanager sync{RESET})
+        print(f"""{BOLD}skillmanager audit [--dry-run]{RESET} (alias: {BOLD}skillmanager sync{RESET})
 Recreate symlinks from metadata.status in each skills/<name>/SKILL.md.
   - active (default) — production LLM dirs; strip staging links
   - staging — skills-staging dirs only
   - review / deactivated / decommissioned — no LLM symlinks
-Also: orphan symlink warnings, frontmatter check, regen context.md for active skills.""")
+Also: orphan symlink auto-removal (via metadata.formerly renames), frontmatter
+check, regen context.md for active skills.
+
+Flags:
+  --dry-run   Preview all changes without writing anything.""")
     elif subcmd == "knowledge-os":
         print(f"""{BOLD}skillmanager knowledge-os{RESET}
 Verifies Obsidian meta vault (OBSIDIAN_ROOT / OBSIDIAN_META) and that
 wiki-harvest and vault-paths symlinks exist under the configured LLM skills directories.""")
+    elif subcmd == "vaults":
+        print(f"""{BOLD}skillmanager vaults{RESET}
+Lists vaults under OBSIDIAN_ROOT in two buckets:
+  Governed   — have CLAUDE.md + _os/index.md; subject to framework audit
+  Personal   — no markers; framework-invisible; never audited
+
+{BOLD}skillmanager vaults sync{RESET}
+Scans OBSIDIAN_ROOT for governed vaults (both markers present) and writes
+the obsidian: block (root, meta, vaults list) to config.yaml.
+Vaults without markers are skipped — they remain personal/unmanaged.
+Requires confirmation before writing.""")
     elif subcmd == "":
         print(_usage())
     else:
@@ -1806,6 +2193,7 @@ def main() -> None:
         "lint":         cmd_lint,
         "doctor":       cmd_doctor,
         "knowledge-os": cmd_knowledge_os,
+        "vaults":       cmd_vaults,
         "memory-help":  cmd_memory_help,
         "git":          lambda a: cmd_git(a),
         "uninstall":    cmd_uninstall,

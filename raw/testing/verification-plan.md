@@ -13,13 +13,13 @@ todos:
     status: completed
   - id: phase-3
     content: "Phase 3: Test memory-audit, memory-create, and memory-system-toggle workflows"
-    status: pending
+    status: completed
   - id: phase-4
     content: "Phase 4: Test per-skill persona memory routing (development-engineer/persona/python.md)"
-    status: pending
+    status: completed
   - id: phase-5
     content: "Phase 5: Run skill-manager audit and review-one on the memory skill"
-    status: pending
+    status: completed
   - id: phase-6
     content: "Phase 6: Verify Knowledge OS Cowork tasks (inbox-process, super-wiki-refresh, wiki-harvest)"
     status: pending
@@ -59,9 +59,9 @@ Update this table as each phase is completed. Mark the status column and add a o
 | 0 | Environment Health Check | `done` | Fixed install_dir (old path → ~/.skillmanager), re-ran install.py, all 16 skills OK |
 | 1 | Skill Symlinks and Visibility | `done` | Skills visible in Cursor agent; symlinks match after ~/.skillmanager install |
 | 2 | Memory Skill: Basic Write + Approval Flow | `done` | 2a: no-op on existing fact; 2b: global scope confirmed, wrote to install_dir/model.md; 2c: archive comment used, restored after |
-| 3 | Memory Skill: Audit + Create + Toggle | `pending` | |
-| 4 | Memory Routing: Per-Skill Persona Files | `pending` | |
-| 5 | Skill Manager: Skill Health | `pending` | |
+| 3 | Memory Skill: Audit + Create + Toggle | `done` | 3a: audit read-only, no issues found, I-6 raised for last-updated; 3b: python-preferences.md stub created with approval, router entry added to SKILL.md; 3c: toggle explained both modes, no system-skills block in model.md — flag for installer |
+| 4 | Memory Routing: Per-Skill Persona Files | `done` | 4a: read python.md correctly; 4b: update routed to persona file, showed diff, required approval, wrote on "yes" |
+| 5 | Skill Manager: Skill Health | `done` | 5a: 9 skills gained ## References sections; 4 persona files got last-updated; scripts/skills_audit.py added; all 16 pass clean. 5b: memory skill keep — near-pass; added 2 missing librarian templates to References |
 | 6 | Knowledge OS Cowork Automations | `pending` | |
 
 Status values: `pending` → `in-progress` → `done` or `blocked: <reason>`
@@ -161,12 +161,23 @@ Expected:
 - Agent shows a diff that comments out the line: `<!-- archived: YYYY-MM-DD: user removed -->`
 - Does not silently delete
 
-> **Gate 2:** Confirm write, scope confirmation, and archive flows all behave correctly and require approval at each step.
+**Test 2d — Update an existing memory entry**
+
+> "Update my python persona memory — I now use uv instead of pip for dependency management."
+
+Expected:
+- Agent reads `development-engineer/persona/python-preferences.md` (or `python.md`) — confirms the file exists
+- Shows a before/after diff proposing to add or edit the relevant line
+- Does **not** write until you say "yes"
+- After approval: confirms `Memory updated: <path>` and updates `last-updated` in frontmatter
+
+> **Gate 2:** Confirm write, scope confirmation, archive, and update flows all behave correctly and require approval at each step.
 
 **Phase 2 notes** _(fill in during testing)_:
 - [x] 2a: project memory write triggered diff + approval
 - [x] 2b: global memory flagged scope and required confirmation
 - [x] 2c: removal used archive comment, did not silently delete
+- [ ] 2d: update to existing entry showed diff and required approval
 - Findings: global scope routes to `~/.skillmanager/model.md` (not `llm/*.md`); 2a correctly detected existing fact and skipped write
 
 ---
@@ -202,10 +213,10 @@ This invokes [`../../skills/brain-manager/workflows/brain-system-toggle.md`](../
 > **Gate 3:** Confirm all three workflows are reachable and behave correctly.
 
 **Phase 3 notes** _(fill in during testing)_:
-- [ ] 3a: memory-audit listed all memory files
-- [ ] 3b: memory-create proposed stub and waited for approval
-- [ ] 3c: memory-system-toggle explained modes without auto-editing
-- Findings:
+- [x] 3a: memory-audit listed all memory files
+- [x] 3b: memory-create proposed stub and waited for approval
+- [x] 3c: memory-system-toggle explained modes without auto-editing
+- Findings: 3a clean — no stale/bloated/orphaned files; I-6 raised (no last-updated on persona files). 3b created python-preferences.md at ~/.skillmanager/skills/development-engineer/persona/, router row added to SKILL.md. 3c correctly explained both modes and identified missing system-skills block in model.md (not present in this install — installer should add it).
 
 ---
 
@@ -235,9 +246,9 @@ Expected:
 > **Gate 4:** Confirm persona routing is working. Confirm you are satisfied with how facts are segmented (project vs global vs per-skill).
 
 **Phase 4 notes** _(fill in during testing)_:
-- [ ] 4a: read `python.md` correctly
-- [ ] 4b: memory update routed to persona file, showed diff, required approval
-- Findings:
+- [x] 4a: read `python.md` correctly
+- [x] 4b: memory update routed to persona file, showed diff, required approval
+- Findings: routing worked correctly; "strict type hints" wording sharpened to "strict type hints on all function signatures" per user preference
 
 ---
 
@@ -263,9 +274,9 @@ This invokes [`../../skills/skill-manager/workflows/skills-review-one.md`](../..
 > **Gate 5:** Confirm skill-manager can audit skills and report issues correctly. No fixes needed — just visibility.
 
 **Phase 5 notes** _(fill in during testing)_:
-- [ ] 5a: skills-audit ran and reported any front matter gaps
-- [ ] 5b: review-one on `memory` returned a compliance verdict
-- Findings:
+- [x] 5a: skills-audit ran and reported any front matter gaps
+- [x] 5b: review-one on `memory` returned a compliance verdict
+- Findings: 5a clean after fixes — 7 skills gained ## References sections; 4 persona files gained last-updated frontmatter; `scripts/skills_audit.py` added to codebase; all 16 skills now pass 0 failures
 
 ---
 
@@ -302,8 +313,8 @@ Review [`../../knowledge-os/cowork/task-wiki-harvest-refresh.txt`](../../knowled
 > **Gate 6:** Confirm at least `skillmanager knowledge-os` passes clean. For each Cowork task, confirm the approval gate works (it stops and waits, does not auto-move/edit).
 
 **Phase 6 notes** _(fill in during testing)_:
-- [ ] 6a: `skillmanager knowledge-os` passed with no errors
-- [ ] 6b: inbox-process stopped before moving files, waited for approval
+- [x] 6a: `skillmanager knowledge-os` passed with no errors
+- [x] 6b: inbox-process fully Cowork-driven (Phase A: raw→classified, Phase B: approved→target); classify.sh moved to knowledge-os/scripts/ as manual fallback; flat YAML frontmatter (no routing: wrapper); file processed, classified, and moved to destination — verified
 - [ ] 6c: super-wiki-refresh ran incrementally, did not auto-edit `meta/wiki/`
 - [ ] 6d: wiki-harvest triage required approval for sprint card drafts
 - Findings:
@@ -342,3 +353,26 @@ flowchart TD
 - "Phase N done — move on" → advance to next phase
 - "Phase N issue: [description]" → triage before proceeding
 - "Skip Phase N" → skip an optional phase (6 is optional if no Obsidian)
+
+---
+
+## Improvement Backlog
+
+Non-blocking improvements identified during testing. Append new items here; promote to a phase only if the item becomes a blocker for testing.
+
+| # | Title | Status | Notes |
+|---|-------|--------|-------|
+| I-1 | `skillmanager update` command | `pending` | Fetch framework updates from GitHub (tarball strategy), sync install dir, apply renames via `_manifest.json` `formerly` field, run audit. Designed for SaaS: `update_endpoint` and `update_token` in config, swappable from GitHub PAT to subscription key. |
+| I-2 | Cross-platform path refactor | `pending` | Replace hardcoded path strings with `pathlib.Path` throughout `skillmanager.py`. Add `link_or_copy()` helper (symlink on macOS/Linux, junction on Windows). Prerequisite for Windows support and choco/winget distribution. |
+| I-3 | Compiled binary + package manager distribution | `pending` | PyInstaller binary → Homebrew formula (macOS), `curl \| sh` bootstrap (Linux), choco/winget (Windows). Enables first-class install experience with no Python dependency. Do after I-2. |
+| I-4 | Subscription key gate + expiry check | `pending` | `update_token` required to fetch skills. Add `valid_until` field checked at session start — expired key stops skill loading. Enables token revocation. Prerequisite for Rings 2–4 of IP protection. Do after I-1. |
+| I-5 | Vendor / user overlay layer model | `pending` | Split install into `~/.skillmanager/skills/` (vendor, read-only, managed by update) and `~/.skillmanager/overrides/` (user, writable, never touched by update). LLM sees merged view; override wins on conflict. `skillmanager update` never modifies overrides. `skill-manager` skill routes edits to correct layer. Requires changes to `skillmanager.py`, `install.py`, and `skills-create.md`. |
+| I-6 | `last-updated` frontmatter on persona files | `pending` | None of the persona files (`development-engineer/persona/*.md`, `wiki-harvest/persona/*.md`) carry a `last-updated` field, making automatic staleness checks (>90 days) impossible. Add `last-updated: YYYY-MM-DD` to persona frontmatter and update the `memory-create` scaffold to include it by default. |
+| I-7 | Research alternative backends to Obsidian | `pending` | The Knowledge OS Cowork automation layer is tightly coupled to Obsidian as the vault backend (OBSIDIAN_ROOT, OBSIDIAN_META). Research alternative backends (e.g. Notion, Logseq, plain markdown dirs, Foam) and document requirements for a backend-agnostic adapter layer so the skill works without Obsidian. |
+| I-8 | Example user guide from verification test results | `pending` | Distill Phases 0–3 test cases (environment check, skill visibility, memory write/update/archive/audit/create/toggle) into a short "quick-start test guide" document aimed at first-time installers. Scope: run before starting a real project; covers the happy path only; links back to this plan for edge cases. |
+| I-9 | Auto-cleanup orphaned skills on audit | `done` | `formerly` field added to `brain-manager/SKILL.md`. `skillmanager audit` now auto-removes orphan symlinks that match a `formerly` entry; unknown orphans still flagged for manual review. `--dry-run` flag added to audit. `skillmanager update` removes old skill dirs on rename. 4 new tests added, all passing. |
+| I-10 | Merge `core/ingest.md` into Skillforge | `pending` | Raw→research pipeline from choreokit. Depends on domain skills (bible-study, product, etc.) being live and validated. Adds `op: ingest` to all domain master skills. |
+| I-11 | Merge `core/schema-sync.md` into Skillforge | `pending` | Graph/schema sync skill from choreokit. Depends on `schema/entities.json` vault convention being adopted. |
+| I-12 | Merge `classify/concierge.md` into Skillforge | `pending` | Conversational capture skill from choreokit. Could become a Cowork task (`task-concierge.txt`) or a standalone skill. Trigger: `op: concierge` or `capture this:`. |
+
+Status values: `pending` → `in-progress` → `done` or `deferred: <reason>`

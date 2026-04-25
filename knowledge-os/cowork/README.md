@@ -13,20 +13,22 @@ Skill paths of the form `~/.claude/skills/<name>/` are resolved by `skillmanager
 
 ## Prerequisites
 
-Each task depends on skills that are **not bundled with Skillforge** (marked `choreokit` below). Install them separately and ensure they are symlinked into `~/.claude/skills/`:
+All skills used by these tasks are bundled with Skillforge. Run `skillmanager audit` to install them.
 
-| Skill path | Source | Used by |
-|------------|--------|---------|
-| `~/.claude/skills/classify/` | choreokit / Knowledge OS op-skills | Task A |
-| `~/.claude/skills/core/` (super-wiki-sync, folder-structure-sync) | choreokit / Knowledge OS op-skills | Tasks A, B, C |
-| `~/.claude/skills/wiki-harvest/` | **Skillforge** (`skillmanager audit`) | Task C |
+| Skill path | Used by |
+|------------|---------|
+| `~/.claude/skills/wiki-harvest/` | Task C |
+| `~/.claude/skills/super-wiki-sync/` | Tasks B, C |
+| `~/.claude/skills/folder-structure-sync/` | Task B |
+| `~/.claude/skills/vault-paths/` | Setup task |
 
 ## Task files
 
 | File | Use |
 |------|-----|
-| [task-inbox-process.txt](task-inbox-process.txt) | Task A — inbox classification + process-inbox |
+| [task-inbox-process.txt](task-inbox-process.txt) | Task A — inbox classification + staged move pipeline |
 | [task-super-wiki-refresh.txt](task-super-wiki-refresh.txt) | Task B — super-wiki + folder-structure refresh for meta |
 | [task-wiki-harvest-refresh.txt](task-wiki-harvest-refresh.txt) | Task C — wiki harvest triage: scan curated pages, surface sprint cards, chain super-wiki-sync |
+| [task-vault-onboard.txt](task-vault-onboard.txt) | Setup — convert a personal vault into a governed vault (adds CLAUDE.md + _os/index.md) |
 
 See [docs/knowledge-os.md](../../docs/knowledge-os.md) for the full architecture.

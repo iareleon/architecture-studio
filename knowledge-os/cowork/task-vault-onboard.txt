@@ -1,0 +1,103 @@
+# KO · Vault onboard — paste into any Claude session (Cowork or chat)
+# Purpose: Convert a personal Obsidian vault into a framework-governed vault.
+# Working folder: the target vault root
+# Name: KO · Vault onboard
+#
+# Prerequisites:
+#   vault-paths skill  → ~/.claude/skills/vault-paths/  (Skillforge — run `skillmanager audit`)
+# Run `skillmanager vaults` first to confirm the vault is currently in the "Personal" bucket.
+
+You are onboarding a personal Obsidian vault into the Skill Forge Knowledge OS framework.
+Follow these steps exactly. Show every file you will create before writing. Write nothing without user approval.
+
+## Step 1 — Identify the vault
+
+Ask the user:
+> "What is the name (folder name) of the vault you want to onboard, and what is its purpose in one sentence?"
+
+Resolve the full path: OBSIDIAN_ROOT/<vault-name>
+Check whether `.obsidian/` exists inside it (confirms it is a valid Obsidian vault).
+If `.obsidian/` is missing, warn: "This folder is not yet an Obsidian vault — open it in Obsidian first, then re-run this task."
+
+## Step 2 — Check existing markers
+
+Read the vault root and report:
+| File | Status |
+|------|--------|
+| CLAUDE.md | exists / missing |
+| _os/index.md | exists / missing |
+
+If both already exist, report: "This vault already has governance markers. Run `skillmanager vaults sync` to register it." Stop.
+
+## Step 3 — Scaffold CLAUDE.md (if missing)
+
+Propose the following content. Do NOT write until the user confirms.
+
+---
+# <vault-name> — agent rules
+
+## Vault purpose
+<user-provided purpose sentence>
+
+## Scope
+This vault is governed by the Skill Forge Knowledge OS framework.
+Register: run `skillmanager vaults sync` after any path changes.
+
+## Write rules
+- Confirm with the user before moving, renaming, or deleting files.
+- Never auto-edit _os/index.md generated sections (marked <!-- generated -->).
+- Treat the vault root as the working directory for all relative paths.
+
+## Cross-vault links
+<!-- Add links to related vaults here once registered: -->
+<!-- See ~/Obsidian/meta/_os/index.md for the full vault registry -->
+---
+
+Ask: "Does this look correct for CLAUDE.md? Reply 'yes' to write, or provide edits."
+Write only on 'yes'.
+
+## Step 4 — Scaffold _os/index.md (if missing)
+
+Create the directory `_os/` if it does not exist.
+Propose the following content for `_os/index.md`. Do NOT write until the user confirms.
+
+---
+---
+vault: <vault-name>
+status: 🟡 bootstrapping
+last_updated: <today-YYYY-MM-DD>
+governed_since: <today-YYYY-MM-DD>
+---
+
+# <vault-name> — Knowledge OS index
+
+## Vault overview
+<user-provided purpose sentence>
+
+## Key paths
+| Path | Purpose |
+|------|---------|
+| / | Vault root |
+
+## Notes
+<!-- Add structure notes, conventions, and cross-vault signal contracts here -->
+---
+
+Ask: "Does this look correct for _os/index.md? Reply 'yes' to write, or provide edits."
+Write only on 'yes'.
+
+## Step 5 — Confirm and next steps
+
+After both files are written, report:
+
+✅ Governance markers added to <vault-name>:
+  - CLAUDE.md
+  - _os/index.md
+
+Next steps:
+1. Run `skillmanager vaults` — vault should now appear in the "Governed" bucket
+2. Run `skillmanager vaults sync` — register it in config.yaml
+3. Run `skillmanager knowledge-os` — confirm the full environment is healthy
+4. Open the vault in Obsidian if not already open (adds .obsidian/ config)
+
+# Before saving: replace OBSIDIAN_ROOT with your path, e.g. /Users/you/Obsidian

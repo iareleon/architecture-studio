@@ -38,7 +38,7 @@ Memory & persona audit report  (<date>)
 ─────────────────────────────
 File                                         | Status   | Issue
 ---------------------------------------------|----------|------------------
-skills/wiki-harvest/persona/meridian.md       | OK       |
+skills/wiki-manager/persona/meridian.md       | OK       |
 skills/legacy-skill/memory/baseline.md        | LEGACY   | No memory-file in SKILL; fold or remove
 ```
 
