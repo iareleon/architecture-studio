@@ -48,7 +48,7 @@ If the target is ambiguous, ask: project vs user-global vs which skill `persona/
 
 - **Directive hygiene:** root instruction edits are high-risk—summarise impact and get approval.
 - **Change / discovery logging:** use project trail where the repo keeps it.
-- **Librarian templates:** `references/librarian-templates/` (optional). Adapt to `${SKILLFORGE_DIR}`; no proprietary path assumptions.
+- **Librarian templates:** `references/librarian-templates/` (optional). Adapt to `${SKILLSLOOM_DIR}`; no proprietary path assumptions.
 
 ## References
 

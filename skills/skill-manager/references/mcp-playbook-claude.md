@@ -17,7 +17,7 @@ Claude Code registers MCP servers in `~/.claude/settings.json`.
     },
     "skills-validator": {
       "command": "uv",
-      "args": ["run", "--with", "python-frontmatter", "${SKILLFORGE_DIR}/mcp/skills_validator.py"]
+      "args": ["run", "--with", "python-frontmatter", "${SKILLSLOOM_DIR}/mcp/skills_validator.py"]
     }
   }
 }
@@ -41,4 +41,4 @@ Replace `localhost:3100` with the remote host's SSE URL when migrating to a dedi
 
 - Changes to `~/.claude/settings.json` take effect on next Claude Code session start.
 - Claude Code discovers servers at startup; changes mid-session require a restart.
-- The `settings.json` file is user-scoped — it applies to all projects, not just Skill Forge.
+- The `settings.json` file is user-scoped — it applies to all projects, not just SkillsLoom.

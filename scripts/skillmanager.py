@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""skillmanager — symlink manager for LLM skill directories
+"""skillmanager — SkillsLoom symlink manager for LLM skill directories
 
 Every skill lives at skills/<name>/ (single kebab-case directory name).
 LLM visibility is controlled by metadata.status in that skill's SKILL.md:
@@ -156,11 +156,22 @@ def _expand(p: str) -> Path:
     return Path(p.replace("~", str(_HOME)))
 
 
+def _env_install_override() -> str:
+    """Explicit install root from environment (SkillsLoom primary; legacy alias supported)."""
+    return (os.environ.get("SKILLSLOOM_DIR", "") or os.environ.get("SKILLMANAGER_DIR", "")).strip()
+
+
 def _get_config_file() -> Path:
-    skillmanager_dir = os.environ.get("SKILLMANAGER_DIR", "")
-    if skillmanager_dir:
-        return _expand(skillmanager_dir) / "config.yaml"
-    return _HOME / ".skillmanager" / "config.yaml"
+    env_root = _env_install_override()
+    if env_root:
+        return _expand(env_root) / "config.yaml"
+    primary = _HOME / ".skillsloom" / "config.yaml"
+    if primary.is_file():
+        return primary
+    legacy = _HOME / ".skillmanager" / "config.yaml"
+    if legacy.is_file():
+        return legacy
+    return primary
 
 
 def _load_config() -> dict:
@@ -168,14 +179,16 @@ def _load_config() -> dict:
 
 
 def _get_skillmanager_dir() -> Path:
-    env_val = os.environ.get("SKILLMANAGER_DIR", "")
+    env_val = _env_install_override()
     if env_val:
         return _expand(env_val)
     cfg = _load_config()
     install_dir = cfg.get("install_dir", "")
     if install_dir:
         return _expand(install_dir)
-    return _HOME / ".skillmanager"
+    if (_HOME / ".skillmanager").is_dir():
+        return _HOME / ".skillmanager"
+    return _HOME / ".skillsloom"
 
 
 def _get_skills_dir() -> Path:
@@ -802,7 +815,7 @@ def cmd_doctor(_args: list[str]) -> None:
         if not result:
             issues += 1
 
-    print(f"  SKILLMANAGER_DIR = {skillmanager_dir}\n")
+    print(f"  SKILLSLOOM_DIR = {skillmanager_dir}\n")
 
     check("Config file", config_file.exists(), "found", f"MISSING — run install.py")
     check("Install directory", skillmanager_dir.is_dir(), "exists", "MISSING — run install.py")
@@ -963,24 +976,28 @@ def cmd_knowledge_os(_args: list[str]) -> None:
                 vault_count += 1
     print(f"\n  Vaults under OBSIDIAN_ROOT with CLAUDE.md + _os/index.md: {vault_count}")
 
-    print("\n  Skillforge symlinks (wiki + vault path skills):")
-    for skill_name in ["wiki-harvest", "vault-paths"]:
-        found = False
-        target = ""
+    print("\n  SkillsLoom symlinks (Knowledge OS):")
+    # Accept wiki-manager or legacy wiki-harvest symlink (rename / formerly)
+    wiki_aliases = ("wiki-manager", "wiki-harvest")
+    found_wiki = False
+    wiki_target = ""
+    for alias in wiki_aliases:
         for ld in _get_llm_skill_dirs():
-            link = ld / skill_name
+            link = ld / alias
             if link.is_symlink() and link.exists():
-                found = True
+                found_wiki = True
                 try:
-                    target = os.readlink(link)
+                    wiki_target = f"{alias} → {os.readlink(link)}"
                 except OSError:
-                    target = "?"
+                    wiki_target = f"{alias} → ?"
                 break
-        if found:
-            print(f"    {skill_name:<22} {GREEN}ok{RESET} → {target}")
-        else:
-            print(f"    {skill_name:<22} {YELLOW}missing — skill inactive or not audited{RESET}")
-            issues += 1
+        if found_wiki:
+            break
+    if found_wiki:
+        print(f"    {'wiki (manager)':<22} {GREEN}ok{RESET} {wiki_target}")
+    else:
+        print(f"    {'wiki-manager':<22} {YELLOW}missing — skill inactive or not audited{RESET}")
+        issues += 1
 
     if choreokit_env:
         ck = _expand(choreokit_env)
@@ -1072,7 +1089,7 @@ def _vaults_list() -> None:
         print(f"\n  To bring a personal vault under governance, add to its root:")
         print(f"    CLAUDE.md         agent rules for the vault")
         print(f"    _os/index.md      Knowledge OS wiki registry entry")
-        print(f"  Use the onboard task: knowledge-os/cowork/task-vault-onboard.txt")
+        print("  Use the Knowledge OS terminal vault-onboarding prompt")
     else:
         print("    none")
 
@@ -1499,7 +1516,7 @@ def cmd_update(args: list[str]) -> None:
     if not (source_path / "skills").is_dir():
         die(f"No skills/ subdirectory found in: {source_path}")
 
-    print(f"\n{BOLD}=== Skill Forge Update ==={RESET}\n")
+    print(f"\n{BOLD}=== SkillsLoom Update ==={RESET}\n")
     print(f"  Source:      {source_path}")
     print(f"  Install dir: {skillmanager_dir}\n")
 
@@ -1658,7 +1675,7 @@ def cmd_customize(_args: list[str]) -> None:
     if not skills_dir.is_dir():
         die(f"Skills directory not found: {skills_dir} — run 'install.py' first.")
 
-    print(f"\n{BOLD}=== Skill Forge Customize ==={RESET}\n")
+    print(f"\n{BOLD}=== SkillsLoom Customize ==={RESET}\n")
     print("This wizard helps you create environment-specific context and workflow")
     print("skills for your installed SMEs.\n")
     print("For each skill you will be asked:")
@@ -1901,7 +1918,7 @@ def cmd_config(args: list[str]) -> None:
 # ---------------------------------------------------------------------------
 
 def cmd_memory_help(_args: list[str]) -> None:
-    print(f"""{BOLD}Skill Forge — Memory Guide{RESET}
+    print(f"""{BOLD}SkillsLoom — Memory Guide{RESET}
 
 {BOLD}What memory does{RESET}
   Memory files let your AI assistant remember things about you across sessions.
@@ -1934,7 +1951,7 @@ def cmd_memory_help(_args: list[str]) -> None:
 
 def cmd_uninstall(_args: list[str]) -> None:
     skillmanager_dir = _get_skillmanager_dir()
-    print(f"\n{BOLD}=== Skill Forge Uninstall ==={RESET}\n")
+    print(f"\n{BOLD}=== SkillsLoom Uninstall ==={RESET}\n")
     print("This will remove:")
     print("  1. All skill symlinks from LLM skill directories")
     print("  2. The skillmanager binary from the install bin directory")
@@ -1998,7 +2015,7 @@ def cmd_uninstall(_args: list[str]) -> None:
         backup_answer = input("\nBack up customised files before uninstall? [Y/n]: ").strip() or "Y"
         if backup_answer.upper() == "Y":
             today = datetime.datetime.now().strftime("%Y%m%d")
-            backup_dir = _HOME / f".skillmanager-backup-{today}"
+            backup_dir = _HOME / f".skillsloom-backup-{today}"
             for rel in customised:
                 src = skillmanager_dir / rel
                 dst = backup_dir / rel
@@ -2019,9 +2036,9 @@ def cmd_uninstall(_args: list[str]) -> None:
     # Step 5: Remove PATH entries from shell rc files (Unix only)
     if not IS_WINDOWS:
         print(f"\n{BOLD}Step 5: Shell PATH entries{RESET}")
-        if input("Remove Skill Forge PATH entries from ~/.bashrc and ~/.zshrc? (yes / no): ").strip() == "yes":
+        if input("Remove SkillsLoom PATH entries from ~/.bashrc and ~/.zshrc? (yes / no): ").strip() == "yes":
             path_line = 'export PATH="$HOME/.local/bin:$PATH"'
-            path_comment = "# Added by Skill Forge install"
+            path_comment = "# Added by SkillsLoom install"
             for rc_name in (".bashrc", ".zshrc"):
                 rc_file = _HOME / rc_name
                 if not rc_file.exists():
@@ -2034,7 +2051,7 @@ def cmd_uninstall(_args: list[str]) -> None:
             info("Kept PATH entries in shell config files.")
 
     print()
-    ok("Skill Forge uninstalled. Reload your shell if needed.")
+    ok("SkillsLoom uninstalled. Reload your shell if needed.")
 
 
 # ---------------------------------------------------------------------------
@@ -2090,7 +2107,8 @@ def _usage() -> str:
   Every skill:   skills/<name>/
 
 {BOLD}ENVIRONMENT{RESET}
-  SKILLMANAGER_DIR   Override install directory (default: read from config.yaml)
+  SKILLSLOOM_DIR     Override install directory (default: read from config.yaml)
+  SKILLMANAGER_DIR   Legacy alias for SKILLSLOOM_DIR (deprecated)
   OBSIDIAN_ROOT      Base path for Obsidian vaults (default: ~/Obsidian)
   OBSIDIAN_META      Master meta vault (default: OBSIDIAN_ROOT/meta)
   CHOREOKIT_DIR      Optional separate tree for Knowledge OS op-skills
@@ -2130,7 +2148,7 @@ Examples:
   skillmanager git repo-rename""")
     elif subcmd == "uninstall":
         print(f"""{BOLD}skillmanager uninstall{RESET}
-Interactively removes Skill Forge from the system:
+Interactively removes SkillsLoom from the system:
   1. Removes all skill symlinks from LLM target directories
   2. Removes the skillmanager binary from the install bin directory
   3. (Optional) Removes skill data directory ({_get_skillmanager_dir()})
@@ -2152,7 +2170,7 @@ Flags:
     elif subcmd == "knowledge-os":
         print(f"""{BOLD}skillmanager knowledge-os{RESET}
 Verifies Obsidian meta vault (OBSIDIAN_ROOT / OBSIDIAN_META) and that
-wiki-harvest and vault-paths symlinks exist under the configured LLM skills directories.""")
+wiki-manager (or legacy wiki-harvest) symlink exists under the configured LLM skills directories.""")
     elif subcmd == "vaults":
         print(f"""{BOLD}skillmanager vaults{RESET}
 Lists vaults under OBSIDIAN_ROOT in two buckets:
@@ -2206,7 +2224,7 @@ def main() -> None:
     }
 
     if not cmd:
-        print("Skill Forge — use metadata.status in each SKILL.md; run skillmanager help")
+        print("SkillsLoom — use metadata.status in each SKILL.md; run skillmanager help")
         sys.exit(1)
 
     handler = dispatch.get(cmd)

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Skillforge — Skills for your AI agents</title>
+  <title>SkillsLoom — Skills for your AI agents</title>
   <meta name="description" content="A filesystem-based skill management system for LLMs. Skills are directories. State is encoded in directory location. No database, no background services.">
   <style>
     /* ── Choreogrifi brand tokens ───────────────────────────────────────── */
@@ -369,7 +369,7 @@
       <li><a href="getting-started.html">Docs</a></li>
       <li><a href="cli.html">CLI</a></li>
       <li><a href="skill-spec.html">Spec</a></li>
-      <li><a href="https://github.com/Choreogrifi/skill-forge" class="nav-cta">GitHub</a></li>
+      <li><a href="https://github.com/Choreogrifi/skillsloom" class="nav-cta">GitHub</a></li>
     </ul>
   </div>
 </nav>
@@ -384,16 +384,16 @@
     </p>
     <div class="hero-actions">
       <a href="getting-started.html" class="btn-primary">Get Started</a>
-      <a href="https://github.com/Choreogrifi/skill-forge" class="btn-secondary">
+      <a href="https://github.com/Choreogrifi/skillsloom" class="btn-secondary">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
         Star on GitHub
       </a>
     </div>
     <div class="hero-code">
       <div><span class="prompt">$ </span>bash scripts/install.sh</div>
-      <div><span class="prompt">$ </span>skillforge ls</div>
-      <div><span class="prompt">$ </span>skillforge audit</div>
-      <div class="line-accent"><span class="prompt">$ </span>skillforge show git</div>
+      <div><span class="prompt">$ </span>skillmanager ls</div>
+      <div><span class="prompt">$ </span>skillmanager audit</div>
+      <div class="line-accent"><span class="prompt">$ </span>skillmanager show git-manager</div>
       <div><span class="comment"># Skills are now visible to Claude, Gemini, and more</span></div>
     </div>
   </div>
@@ -432,10 +432,10 @@
   </div>
 </div>
 
-<!-- ── Why Skillforge ────────────────────────────────────────────────────── -->
+<!-- ── Why SkillsLoom ────────────────────────────────────────────────────── -->
 <section>
   <div class="container">
-    <div class="section-label">Why Skillforge</div>
+    <div class="section-label">Why SkillsLoom</div>
     <h2 class="section-title">Skills provide procedural knowledge on demand</h2>
     <p class="section-sub">
       Agents often lack the context needed to work reliably in your specific environment.
@@ -511,7 +511,7 @@
       <div class="card">
         <div class="icon">⚡</div>
         <h3>Lifecycle in the path</h3>
-        <p>Each skill stays in <code>skills/&lt;name&gt;/</code>; <code>metadata.status</code> in <code>SKILL.md</code> controls LLM symlinks (run <code>skillforge audit</code>).</p>
+        <p>Each skill stays in <code>skills/&lt;name&gt;/</code>; <code>metadata.status</code> in <code>SKILL.md</code> controls LLM symlinks (run <code>skillmanager audit</code>).</p>
       </div>
     </div>
   </div>
@@ -562,11 +562,11 @@
   <div class="container">
     <h2>Open format. Open source.</h2>
     <p>
-      Skillforge is released under the Apache 2.0 licence.
+      SkillsLoom is released under the Apache 2.0 licence.
       The SKILL.md format is an open standard — any agent can adopt it.
       Contributions welcome.
     </p>
-    <a href="https://github.com/Choreogrifi/skill-forge" class="btn-accent">
+    <a href="https://github.com/Choreogrifi/skillsloom" class="btn-accent">
       View on GitHub ↗
     </a>
   </div>
@@ -581,7 +581,7 @@
       <li><a href="cli.html">CLI</a></li>
       <li><a href="skill-spec.html">SKILL.md Spec</a></li>
       <li><a href="skill-catalog.html">Catalog</a></li>
-      <li><a href="https://github.com/Choreogrifi/skill-forge">GitHub</a></li>
+      <li><a href="https://github.com/Choreogrifi/skillsloom">GitHub</a></li>
     </ul>
     <span class="license">Apache 2.0 · Built by Choreogrifi</span>
   </div>

@@ -23,5 +23,5 @@ After moves from inbox: `folder-structure-sync` (destination) → `super-wiki-sy
 
 ## See also
 
-- [docs/knowledge-os.md](../../../docs/knowledge-os.md) in the Skillforge repo
+- [docs/knowledge-os.md](../../../docs/knowledge-os.md) in the SkillsLoom repo
 - [vault-paths/references/vault-map.md](../../vault-paths/references/vault-map.md) — `meta` row

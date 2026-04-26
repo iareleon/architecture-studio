@@ -8,7 +8,7 @@ Drift = working on something that is not on the active track.
 - Starting a new product design when vision.md is still 🟡
 - Researching tools when a sprint card is waiting to execute
 - Writing social content when a wiki brain dump is overdue
-- Adding features to Skill Forge when the router skill isn't built yet
+- Adding features to SkillsLoom when the router skill isn't built yet
 - Planning the website before the platform architecture is approved
 - Having a great new idea and immediately starting to build it
 

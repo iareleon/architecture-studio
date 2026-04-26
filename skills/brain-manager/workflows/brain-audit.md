@@ -6,8 +6,8 @@ Reviews durable context files for staleness, bloat, and broken references. Repor
 
 ### 1. Discover files
 
-- Glob `${SKILLFORGE_DIR}/skills/**/memory/**/*.md` (legacy; exclude `*.archived.md`)
-- Glob `${SKILLFORGE_DIR}/skills/**/persona/**/*.md`
+- Glob `${SKILLSLOOM_DIR}/skills/**/memory/**/*.md` (legacy; exclude `*.archived.md`)
+- Glob `${SKILLSLOOM_DIR}/skills/**/persona/**/*.md`
 - Optional: project `CLAUDE.md` paths the user names (out-of-tree)
 
 For each file, read the frontmatter block only (between `---` delimiters) when doing quick checks.

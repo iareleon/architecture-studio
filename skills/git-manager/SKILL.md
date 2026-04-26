@@ -1,9 +1,10 @@
 ---
 name: git-manager
-description: Git and GitHub/GitLab — router. Load workflows for provider, local git, or commit automation. Invoke for any repository operation.
+description: "Git and hosting — local git, GitHub, GitLab; commits, branches, PRs/MRs, releases, and conflict resolution. Use when the user says commit, rebase, merge conflict, open a PR, tag a release, clone, rename a repo, or needs provider-specific steps — even if they only paste `git` output or a GitHub link."
 metadata:
   version: "1.0"
   disable-model-invocation: true
+  formerly: git
 ---
 # Git (router)
 

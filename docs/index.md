@@ -1,12 +1,12 @@
 ---
-title: skill-manager
+title: SkillsLoom
 ---
 
-# skill-manager
+# SkillsLoom
 
 **Version 2.0.0**
 
-A filesystem-based skill management system for LLMs.
+A filesystem-based skill management system for LLMs (CLI binary: `skillmanager`).
 
 Skills are directories under `skills/<name>/`. `metadata.status` in each `SKILL.md` (with `skillmanager audit`) controls symlinks and LLM visibility — no database, no background services.
 
@@ -57,4 +57,4 @@ skillmanager doctor
 - [CLI Reference](cli.md) — all commands with examples
 - [SKILL.md Specification](skill-spec.md) — skill format and naming rules
 - [Domain (skill) layout](domain-layout.md) — self-contained tree, SRP, and dependencies without duplication
-- [Knowledge OS + Obsidian meta](knowledge-os.md) — multi-vault registry, env vars, hooks, and Cowork templates
+- [Knowledge OS + Obsidian meta](knowledge-os.md) — multi-vault registry, env vars, hooks, and terminal workflow templates

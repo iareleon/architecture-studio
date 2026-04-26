@@ -1,12 +1,12 @@
 # Skills Propose Subflow
 
-Guides the user through proposing a new skill for the Skill Forge repository.
+Guides the user through proposing a new skill for the SkillsLoom repository.
 Creates a local draft for review and optionally submits a pull request.
 
 ## When to Use
 
 Invoke when the user explicitly wants to contribute a new skill to the shared
-Skill Forge repository — not just create a skill for personal use.
+SkillsLoom repository — not just create a skill for personal use.
 
 ## Workflow
 
@@ -42,7 +42,7 @@ Using the appropriate template:
 - `sme-persona` → `skills/skill-manager/templates/expertise-skill-template.md`
 - `workflow` → `skills/skill-manager/templates/workflow-skill-template.md`
 
-Write the draft to `${SKILLMANAGER_DIR}/skills/<name>/SKILL.md`.
+Write the draft to `${SKILLSLOOM_DIR}/skills/<name>/SKILL.md`.
 
 Present the draft to the user and ask:
 ```
@@ -68,7 +68,7 @@ Body: include the SKILL.md content as the PR description
 ### 5. Confirm Outcome
 
 ```
-Skill proposal saved to: ${SKILLMANAGER_DIR}/skills/<type>/<name>/
+Skill proposal saved to: ${SKILLSLOOM_DIR}/skills/<type>/<name>/
 [PR created: <url>]
 
 Run: skillmanager audit   — to create LLM symlinks from metadata.status

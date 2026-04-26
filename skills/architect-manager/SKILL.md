@@ -1,9 +1,10 @@
 ---
 name: architect-manager
-description: Solution and systems architecture — modular, reusable, scalable, simple, cost-conscious, AI-aware, and secure by design. Invoke when shaping solutions, reviewing architecture, or validating alignment to design principles.
+description: "Solution and systems architecture — NFRs, trade-offs, C4, ports/adapters, and secure-by-default design. Use when the user asks how to structure a system, which pattern fits, whether a design is over-engineered, what to build vs buy, or to review a proposal, ADR, or integration boundaries — even if they do not say \"architecture\" or \"HLD.\""
 metadata:
   version: "1.2"
   disable-model-invocation: true
+  formerly: architect
 ---
 # System architect (governance + design)
 

@@ -1,6 +1,6 @@
 ---
 name: development-engineer
-description: Apply software engineering expertise for implementation, dependency injection setup, and SOLID design. Invoke when implementing features, refactoring code, or setting up DI patterns.
+description: "Software implementation — SOLID, DI, strict typing, tests aligned with the stack, and honest trade-offs. Use when the user wants code written, a feature implemented, a refactor, a PR prepped, project setup, or a review of structure and boundaries — even if they just paste a file or say \"fix this.\""
 metadata:
   version: "1.0"
   disable-model-invocation: true

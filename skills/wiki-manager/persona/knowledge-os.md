@@ -4,7 +4,7 @@ Load when working in the **meta** master vault or when running inbox / super-wik
 
 ## System paths
 
-- Meta vault: `{OBSIDIAN_META}` (set in Cowork task or environment)
+- Meta vault: `{OBSIDIAN_META}` (set in terminal environment)
 - Config: `{OBSIDIAN_META}/wiki-manager.config.yaml`
 - Per-vault registry pages (auto-generated): `{OBSIDIAN_META}/wiki/{vault-id}.md` — written by `wiki-sync`. **Do not treat these as curated wiki pages.**
 - Curated domain pages: `{OBSIDIAN_META}/wiki/*.md` that describe domains (e.g. business, product) — these are narrative and hand-maintained.
@@ -30,4 +30,4 @@ After `inbox-dispatch` or `vault-inbox-sync`: run `folder-structure-sync.md` for
 ## See also
 
 - `references/config-schema.md` — full config.yaml field reference
-- [docs/knowledge-os.md](../../../docs/knowledge-os.md) in the Skillforge repo
+- [docs/knowledge-os.md](../../../docs/knowledge-os.md) in the SkillsLoom repo

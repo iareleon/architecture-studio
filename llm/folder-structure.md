@@ -1,7 +1,7 @@
 # Project Folder Structure
 
 ```bash
-project-skill-forge/
+project-skillsloom/
 ├── .github/
 │   └── workflows/
 │       └── validate.yml
@@ -20,14 +20,10 @@ project-skill-forge/
 │   └── skill-spec.md
 ├── knowledge-os/                 # Knowledge OS integration pack
 │   ├── knowledge-os.env.example
-│   ├── cowork/                   # Claude Cowork scheduled task templates
-│   │   ├── task-inbox-process.txt
-│   │   ├── task-super-wiki-refresh.txt
-│   │   └── task-wiki-harvest-refresh.txt
 │   └── pilot/
 │       └── estate/               # Estate agency pilot templates
-│           ├── cowork-schedule.md
-│           ├── memory-estate-baseline.md
+│           ├── cli-schedule.md
+│           ├── README.md
 │           └── vault-skeleton.md
 ├── llm/                          # LLM-facing reference files
 │   ├── folder-structure.md
@@ -46,23 +42,7 @@ project-skill-forge/
 │   ├── check-skill-names.sh
 │   └── hooks/
 │       └── pre-commit
-└── skills/                       # All Skillforge skills (flat, one dir per skill)
-    ├── architect/
-    ├── cloud-engineer/
-    ├── development-engineer/
-    ├── devops/
-    ├── diagrammer/
-    ├── documenter/
-    ├── git/
-    ├── memory/
-    ├── personal/
-    ├── project-manager/
-    ├── security/
-    ├── skill-manager/
-    ├── social-media/
-    ├── tester/
-    ├── vault-paths/
-    └── wiki-harvest/
+└── skills/                       # All SkillsLoom skills (flat: skills/<name>/SKILL.md)
 ```
 
 Each skill directory contains a `SKILL.md` and optional `workflows/`, `references/`, `persona/`, and `templates/` subdirectories. See [docs/domain-layout.md](../docs/domain-layout.md) and [skills/README.md](../skills/README.md).

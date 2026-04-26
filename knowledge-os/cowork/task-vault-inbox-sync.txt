@@ -1,9 +1,0 @@
-# KO · Vault inbox sync — paste into Cowork → Scheduled tasks → Instructions
-# Working folder: OBSIDIAN_META
-# Name: KO · Vault inbox sync
-
-Read ~/.claude/skills/wiki-manager/workflows/vault-inbox-sync.md
-Read ~/.claude/skills/wiki-manager/workflows/wiki-sync.md
-OBSIDIAN_META=<your path>
-
-# Before saving: replace OBSIDIAN_META with your path, e.g. /Users/you/Obsidian/meta

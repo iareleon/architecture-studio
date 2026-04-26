@@ -7,7 +7,7 @@ metadata:
 ---
 # Wiki Harvest
 
-**Where this should live (long term):** per-wiki conventions belong in each wiki's **`CLAUDE.md`** (status ladder, which pages are curated, links to question-banks / schema). This skill remains the portable **playbook** for live harvest sessions; mirror or summarise the subflows in the wiki that owns the page so headless tools do not need to load Skillforge.
+**Where this should live (long term):** per-wiki conventions belong in each wiki's **`CLAUDE.md`** (status ladder, which pages are curated, links to question-banks / schema). This skill remains the portable **playbook** for live harvest sessions; mirror or summarise the subflows in the wiki that owns the page so headless tools do not need to load SkillsLoom.
 
 **Main brain:** this file. **Install personas** (optional, install-specific): `persona/meridian.md` (example: arch-agency wiki) · `persona/knowledge-os.md` (example: meta knowledge vault). Configure or replace these for your wiki system. Page schema: `references/wiki-page-schema.md`; questions: `references/question-banks.md`.
 

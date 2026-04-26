@@ -1,9 +1,10 @@
 ---
 name: test-manager
-description: Apply QA expertise to generate unit/integration tests and define testing strategy. Invoke when writing tests for new features, validating bug fixes, or setting up test suites.
+description: "Testing strategy and test code — pyramids, unit vs integration, naming, and CI expectations aligned with the stack. Use when the user asks for tests, \"how do I test this?\", better coverage, a failing suite, or a review of assertions on a PR — even if they only share a function and a bug report."
 metadata:
   version: "1.0"
   disable-model-invocation: true
+  formerly: tester
 ---
 # QA & Tester Expertise
 

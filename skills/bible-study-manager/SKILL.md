@@ -1,6 +1,6 @@
 ---
 name: bible-study-manager
-description: Orchestrates the bible-study Obsidian vault — passage research, promotion to wiki, theme synthesis, and study guide generation. Invoke for any bible-study vault operation.
+description: "Bible-study Obsidian vault — passage research, cross-references, theme synthesis, study guides, and promotion to the wiki. Use when the user wants to work a passage, build a study outline, track themes, prep teaching notes, or move notes from raw to wiki — even if they only say things like \"I read this in Romans\" or \"help me turn this into a study.\""
 metadata:
   version: "1.0"
   disable-model-invocation: true
@@ -17,11 +17,11 @@ bible-study vault session after reading the vault's `CLAUDE.md`.
 
 For each sub-skill invocation, resolve in order:
 1. `~/Obsidian/bible-study/.skills-override/{sub-skill-name}.md` — subscriber custom
-2. `~/.claude/skills/bible-study-manager/` — Skillforge default
+2. `~/.claude/skills/bible-study-manager/` — SkillsLoom default
 
 ## Operations
 
-### op: research {cluster}
+### :sl research {cluster}
 
 Research a passage cluster (e.g. `genesis-1-3`).
 
@@ -31,7 +31,7 @@ Research a passage cluster (e.g. `genesis-1-3`).
 4. Append to `_os/log.md`: `## [date] ingest | {cluster-slug}`
 5. Report: `Research complete → research/active/{cluster-slug}.md`
 
-### op: promote {cluster}
+### :sl promote {cluster}
 
 Promote an approved cluster from `approved/` to `wiki/`.
 
@@ -47,7 +47,7 @@ Promote an approved cluster from `approved/` to `wiki/`.
 7. Run folder-structure-sync via `~/.claude/skills/wiki-manager/workflows/folder-structure-sync.md`
    for each folder modified: `wiki/passages/`, `wiki/themes/`, `wiki/people/` (as applicable)
 
-### op: theme-synthesis
+### :sl theme-synthesis
 
 Synthesise themes across 3+ approved passage clusters.
 
@@ -56,7 +56,7 @@ Synthesise themes across 3+ approved passage clusters.
 3. Update or create `wiki/themes/*.md` pages
 4. Update `wiki/index.md` Themes section
 
-### op: study-guide {cluster}
+### :sl study-guide {cluster}
 
 Generate a formatted study guide from a promoted wiki passage.
 
@@ -76,4 +76,4 @@ For wiki-level operations (promote, theme-synthesis): also append to `wiki/log.m
 ## ADR Flags
 
 - ADR-02: Passage granularity — this skill assumes narrative clusters (e.g. Gen 1–3 together).
-  If atomic per-chapter is preferred, update the `op: research` step 2.
+  If atomic per-chapter is preferred, update the `:sl research` step 2.

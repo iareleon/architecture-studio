@@ -1,5 +1,5 @@
 <!-- EDIT THIS FILE — replace all <PLACEHOLDER> values with your own details.
-     Use for rare **shared** context that must sit in Skill Forge install (most teams use project CLAUDE.md instead). -->
+     Use for rare **shared** context that must sit in SkillsLoom install (most teams use project CLAUDE.md instead). -->
 ---
 type: shared
 description: <one-line — what shared context this file provides>

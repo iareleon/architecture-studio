@@ -4,13 +4,13 @@ title: Domain (skill) layout — research and standard
 
 # Domain layout — research and approved standard
 
-A **domain** in Skill Forge is one activatable unit: the directory `skills/<skill-id>/`. Visibility to the LLM is controlled by `metadata.status` in `SKILL.md`, not by moving folders. A domain must stay **self-contained**: everything specific to that domain lives under its tree, with **single responsibility** per file and no duplicated facts across skills.
+A **domain** in SkillsLoom is one activatable unit: the directory `skills/<skill-id>/`. Visibility to the LLM is controlled by `metadata.status` in `SKILL.md`, not by moving folders. A domain must stay **self-contained**: everything specific to that domain lives under its tree, with **single responsibility** per file and no duplicated facts across skills.
 
 ## Research summary (industry practice)
 
 - **Progressive disclosure** (Anthropic Agent Skills: [Authoring best practices](https://docs.anthropic.com/en/docs/agents-and-tools/agent-skills/best-practices)): `SKILL.md` is the entry and table of contents; long material is split so only what is needed is loaded. Bodies of supporting docs stay in sibling files, not in one giant `SKILL.md` (practical limit: keep `SKILL.md` on the order of hundreds of lines, not thousands).
 - **Shallow structure**: Reference files are linked **one level** under the skill (e.g. `references/topic.md`, `workflows/commit.md`) so routers can point to a stable path without deep nesting.
-- **Separation of concerns**: Executable automation lives in `scripts/` (code), procedural steps in `workflows/` (markdown), durable preferences in `memory/`, static facts in `references/`, fill-in scaffolds in `templates/`.
+- **Separation of concerns**: Executable tooling lives in `scripts/` (code), procedural steps in `workflows/` (markdown), durable preferences in `memory/`, static facts in `references/`, fill-in scaffolds in `templates/`.
 - **Composability**: Multiple small skills with clear `description` triggers compose better than one monolith. Cross-domain behaviour is achieved by **delegation** and **links**, not by copying content.
 
 ## Approved directory shape

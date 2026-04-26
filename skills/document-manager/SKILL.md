@@ -1,9 +1,10 @@
 ---
 name: document-manager
-description: Technical documents — router to templates and workflows (README, ADR, HLD, audit, update). Invoke to write, review, or extend docs.
+description: "Technical writing — README, ADR, HLD, document audits, and structured updates. Use when the user needs a new doc from a template, a spec or ADR, a long-form HLD, a doc pass before release, or a refresh of an existing file — even if they say \"we need a doc for this\" or \"formalise this in writing.\""
 metadata:
   version: "1.0"
   disable-model-invocation: true
+  formerly: documenter
 ---
 # Documenter (router)
 

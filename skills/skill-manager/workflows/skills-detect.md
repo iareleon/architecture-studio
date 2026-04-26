@@ -37,7 +37,7 @@ pre-filled.
 
 ### Defer
 Write a plan stub to:
-`${SKILLMANAGER_DIR}/skills/skill-manager/references/deferred-skill-plans/<name>-YYYY-MM-DD.md`
+`${SKILLSLOOM_DIR}/skills/skill-manager/references/deferred-skill-plans/<name>-YYYY-MM-DD.md`
 
 ```markdown
 ---
@@ -62,7 +62,7 @@ deferred-on: YYYY-MM-DD
 5. Run: skillmanager audit
 ```
 
-Confirm to user: `Deferred plan saved: ${SKILLMANAGER_DIR}/skills/skill-manager/references/deferred-skill-plans/<name>-YYYY-MM-DD.md`
+Confirm to user: `Deferred plan saved: ${SKILLSLOOM_DIR}/skills/skill-manager/references/deferred-skill-plans/<name>-YYYY-MM-DD.md`
 
 ### Decline
 Acknowledge: `Understood. Skill proposal suppressed for this session.`

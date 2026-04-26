@@ -1,6 +1,6 @@
 ---
 name: cloud-engineer
-description: Cloud infrastructure — read-only discovery, inventory, and SME baseline for your configured cloud provider. Invoke for project inventory, scan flows, and cloud architecture defaults.
+description: "Read-only cloud discovery and inventory (e.g. GCP) — what exists, where it lives, and a sensible SME snapshot for defaults. Use when the user asks what is in a project, how resources are named, to scan or list services, to compare as-is to a design, or to baseline infra before a change — even if they only paste a gcloud error or a resource name."
 metadata:
   version: "1.1"
   disable-model-invocation: true

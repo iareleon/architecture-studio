@@ -11,7 +11,7 @@ Ask the user:
 
 ```
 Repository URL to clone:
-Target directory (default: infer from repo name):
+target-folder: (default: infer from repo name)
 Clone type:
   1. Full clone (default)
   2. Sparse checkout — specify paths to include
@@ -29,14 +29,14 @@ Present the full command sequence for approval:
 ```
 Proposed actions:
 ─────────────────
-1. git clone <url> <target-dir>
+1. git clone <url> <target-folder>
    [+ sparse/shallow flags if selected]
 2. [if submodules detected] git submodule update --init --recursive
 
 Proceed? (yes / edit / cancel)
 ```
 
-Warn if the target directory already exists.
+Warn if the target folder already exists.
 
 ### 3. Execute on Approval
 
@@ -52,6 +52,6 @@ After successful clone:
 
 ## Guidelines
 
-- Never clone into a directory that already has a `.git` folder without explicit confirmation.
+- Never clone into a folder that already has a `.git` folder without explicit confirmation.
 - For shallow clones, remind the user that history is incomplete and `git log --all` may be limited.
 - For sparse checkouts, confirm the included paths with the user before proceeding.

@@ -7,7 +7,7 @@ file health. Symlink and state invariant issues are delegated to the `skillmanag
 
 ### 1. Discover Skills
 
-Use Glob with `${SKILLMANAGER_DIR}/skills/**/SKILL.md` excluding `workflows/`, or scan active and lifecycle dirs. The parent folder name is the skill id (kebab-case).
+Use Glob with `${SKILLSLOOM_DIR}/skills/**/SKILL.md` excluding `workflows/`, or scan active and lifecycle dirs. The parent folder name is the skill id (kebab-case).
 
 ### 2. Run Checks
 
@@ -34,7 +34,7 @@ regardless of earlier failures.
 - Optional: `persona/**/*.md` should be referenced from the parent `SKILL.md` router or be obviously standalone — flag `UNREFERENCED PERSONA` if a skill has a `persona/` tree but no table row (warn only)
 
 **Deferred skill checks:**
-- Use Glob `${SKILLMANAGER_DIR}/skills/skill-manager/references/deferred-skill-plans/*.md`
+- Use Glob `${SKILLSLOOM_DIR}/skills/skill-manager/references/deferred-skill-plans/*.md`
 - For each, read the `deferred-on` frontmatter field
 - If older than 30 days → `DEFERRED SKILL OVERDUE: <skill-name>`
 

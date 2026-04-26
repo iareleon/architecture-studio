@@ -30,7 +30,7 @@ Load the relevant subflow only when the user's intent matches:
 
 ## Guidelines
 
-- Always write new skills to `${SKILLMANAGER_DIR}/skills/` — never to the working directory.
+- Always write new skills to `${SKILLSLOOM_DIR}/skills/` — never to the working directory.
 - To retire a skill from the LLM, set `metadata.status: decommissioned` and run `skillmanager audit` (files stay on disk).
 - After authoring a skill, always end with: `Run: skillmanager audit`
 - Keep `SKILL.md` lean — move content >10 lines into `references/` or subflow files.

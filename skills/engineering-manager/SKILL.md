@@ -1,6 +1,6 @@
 ---
 name: engineering-manager
-description: Orchestrates the engineering Obsidian vault — feature specs, ADRs, and promotion to wiki. Invoke for any engineering vault operation.
+description: "Engineering Obsidian vault — feature specs, design notes, ADRs, and promotion to the wiki. Use when the user is drafting a feature, recording a technical decision, or moving engineering material into the wiki — even if the note lives under a scratch path or a daily log first."
 metadata:
   version: "1.0"
   disable-model-invocation: true
@@ -17,11 +17,11 @@ engineering vault session after reading the vault's `CLAUDE.md`.
 
 For each sub-skill invocation, resolve in order:
 1. `~/Obsidian/engineering/.skills-override/{sub-skill-name}.md` — subscriber custom
-2. `~/.claude/skills/engineering-manager/` — Skillforge default
+2. `~/.claude/skills/engineering-manager/` — SkillsLoom default
 
 ## Operations
 
-### op: spec {feature}
+### :sl spec {feature}
 
 Generate a feature or system specification.
 
@@ -30,7 +30,7 @@ Generate a feature or system specification.
 3. Append to `_os/log.md`: `## [date] ingest | {feature-slug}-spec`
 4. Report: `Spec draft complete → research/active/{feature-slug}-spec.md`
 
-### op: adr {decision}
+### :sl adr {decision}
 
 Write an architecture decision record.
 
@@ -39,7 +39,7 @@ Write an architecture decision record.
 3. Append to `_os/log.md`: `## [date] ingest | ADR-{nn}-{decision-slug}`
 4. Report: `ADR draft complete → research/active/ADR-{nn}-{decision-slug}.md`
 
-### op: promote {slug}
+### :sl promote {slug}
 
 Promote approved spec or ADR from `approved/` to `wiki/`.
 

@@ -1,5 +1,5 @@
 ---
-name: Skill Forge Verification Plan
+name: SkillsLoom Verification Plan
 description: A gated, step-by-step manual verification guide. Canonical copy for multi-session work — update the progress table as you go.
 todos:
   - id: phase-0
@@ -18,14 +18,14 @@ todos:
     content: "Phase 4: Test per-skill persona memory routing (development-engineer/persona/python.md)"
     status: completed
   - id: phase-5
-    content: "Phase 5: Run skill-manager audit and review-one on the memory skill"
+    content: "Phase 5: Run skill-manager audit and review-one on the brain-manager skill"
     status: completed
   - id: phase-6
-    content: "Phase 6: Verify Knowledge OS Cowork tasks (inbox-process, super-wiki-refresh, wiki-harvest)"
+    content: "Phase 6: Verify Knowledge OS terminal workflows (inbox-process, super-wiki-refresh, wiki-harvest)"
     status: pending
 ---
 
-# Skill Forge Verification Plan
+# SkillsLoom Verification Plan
 
 A phased, gated guide. Each phase ends with a confirmation gate — only proceed when you are satisfied. Signal readiness with: **"Phase N done — move on"** or flag any issues for triage before continuing.
 
@@ -42,7 +42,7 @@ A phased, gated guide. Each phase ends with a confirmation gate — only proceed
 Copy and paste this at the start of any new chat session:
 
 ```
-Read raw/testing/verification-plan.md. We are working through the Skill Forge
+Read raw/testing/verification-plan.md. We are working through the SkillsLoom
 verification plan. Check the progress table and tell me which phase we are on,
 what was last completed, and what the next step is. Wait for my confirmation
 before doing anything.
@@ -56,13 +56,13 @@ Update this table as each phase is completed. Mark the status column and add a o
 
 | Phase | Title | Status | Outcome / Notes |
 |-------|-------|--------|-----------------|
-| 0 | Environment Health Check | `done` | Fixed install_dir (old path → ~/.skillmanager), re-ran install.py, all 16 skills OK |
-| 1 | Skill Symlinks and Visibility | `done` | Skills visible in Cursor agent; symlinks match after ~/.skillmanager install |
+| 0 | Environment Health Check | `done` | Fixed install_dir (migrated to ~/.skillsloom), re-ran install.py, all skills OK |
+| 1 | Skill Symlinks and Visibility | `done` | Skills visible in Cursor agent; symlinks match after ~/.skillsloom install |
 | 2 | Memory Skill: Basic Write + Approval Flow | `done` | 2a: no-op on existing fact; 2b: global scope confirmed, wrote to install_dir/model.md; 2c: archive comment used, restored after |
 | 3 | Memory Skill: Audit + Create + Toggle | `done` | 3a: audit read-only, no issues found, I-6 raised for last-updated; 3b: python-preferences.md stub created with approval, router entry added to SKILL.md; 3c: toggle explained both modes, no system-skills block in model.md — flag for installer |
 | 4 | Memory Routing: Per-Skill Persona Files | `done` | 4a: read python.md correctly; 4b: update routed to persona file, showed diff, required approval, wrote on "yes" |
 | 5 | Skill Manager: Skill Health | `done` | 5a: 9 skills gained ## References sections; 4 persona files got last-updated; scripts/skills_audit.py added; all 16 pass clean. 5b: memory skill keep — near-pass; added 2 missing librarian templates to References |
-| 6 | Knowledge OS Cowork Automations | `pending` | |
+| 6 | Knowledge OS Terminal Workflows | `pending` | |
 
 Status values: `pending` → `in-progress` → `done` or `blocked: <reason>`
 
@@ -70,13 +70,13 @@ Status values: `pending` → `in-progress` → `done` or `blocked: <reason>`
 
 ## Phase 0 — Environment Health Check
 
-**Goal:** Confirm the Skill Forge install is intact before testing anything else.
+**Goal:** Confirm the SkillsLoom install is intact before testing anything else.
 
 Run each command and check the expected output:
 
 ```bash
 skillmanager doctor        # should report all tools found, no PATH errors
-skillmanager config        # should show SKILLMANAGER_DIR, LLM targets (claude etc.)
+skillmanager config        # should show SKILLSLOOM_DIR / install_dir, LLM targets (claude etc.)
 skillmanager version       # should print a version string
 skillmanager ls            # should list all 16 skills with their metadata.status
 skillmanager status        # should confirm symlinks match metadata.status
@@ -84,13 +84,13 @@ skillmanager status        # should confirm symlinks match metadata.status
 
 What to watch for:
 - `doctor` flags missing tools (git, gh, gcloud, terraform) — note any gaps
-- `config` confirms `~/.skillmanager/config.yaml` exists and `install_dir` is a real path (e.g. `~/.skillmanager`)
+- `config` confirms `~/.skillsloom/config.yaml` exists and `install_dir` is a real path (e.g. `~/.skillsloom`)
 - `ls` shows all skills; any unexpected `deactivated` or missing entries
 - `status` shows no mismatched symlinks (if it does, run `skillmanager audit` to fix)
 
 Key files checked implicitly:
 - [`scripts/skillmanager.py`](../../scripts/skillmanager.py) — the CLI
-- `~/.skillmanager/config.yaml` — install config
+- `~/.skillsloom/config.yaml` — install config
 
 > **Gate 0:** Confirm `doctor` is clean and all 16 skills are visible in `ls`. Flag any red flags before proceeding.
 
@@ -105,21 +105,21 @@ Key files checked implicitly:
 
 ## Phase 1 — Skill Symlinks and Visibility
 
-**Goal:** Confirm LLM clients (Cursor, Claude Code, Cowork) can see the skills.
+**Goal:** Confirm LLM clients (Cursor, Claude Code, Claude CLI) can see the skills.
 
 Steps:
 1. Locate your LLM skills dir: `skillmanager config` will show the path (typically `~/.claude/skills/`)
 2. List the symlinks there: `ls -la ~/.claude/skills/`
-3. Verify at least the key skills are symlinked: `memory`, `skill-manager`, `vault-paths`, `documenter`, `git`
+3. Verify at least the key skills are symlinked: `brain-manager`, `skill-manager`, `wiki-manager`, `document-manager`, `git-manager`
 4. If any are missing, run `skillmanager audit` to reconcile
 
 In Cursor, attach skills from the skills picker. In Claude Code, skills load per product behavior.
 
-> **Gate 1:** Confirm skills are visible. Confirm `memory` skill is reachable when you need it.
+> **Gate 1:** Confirm skills are visible. Confirm `brain-manager` is reachable when you need it.
 
 **Phase 1 notes** _(fill in during testing)_:
 - [ ] `~/.claude/skills/` contains correct symlinks
-- [ ] `memory` skill symlink exists and is not broken
+- [ ] `brain-manager` skill symlink exists and is not broken
 - [ ] Skills visible/attachable in Cursor (or your primary client)
 - Findings:
 
@@ -178,7 +178,7 @@ Expected:
 - [x] 2b: global memory flagged scope and required confirmation
 - [x] 2c: removal used archive comment, did not silently delete
 - [ ] 2d: update to existing entry showed diff and required approval
-- Findings: global scope routes to `~/.skillmanager/model.md` (not `llm/*.md`); 2a correctly detected existing fact and skipped write
+- Findings: global scope routes to `~/.skillsloom/model.md` (not `llm/*.md`); 2a correctly detected existing fact and skipped write
 
 ---
 
@@ -199,7 +199,7 @@ This invokes [`../../skills/brain-manager/workflows/brain-audit.md`](../../skill
 > "Create a new per-skill memory stub for the `development-engineer` skill, topic: python-preferences."
 
 This invokes [`../../skills/brain-manager/workflows/brain-create.md`](../../skills/brain-manager/workflows/brain-create.md). Expected:
-- Proposes creating `development-engineer/persona/python-preferences.md` under your installed skills tree (e.g. `~/.skillmanager/skills/...`)
+- Proposes creating `development-engineer/persona/python-preferences.md` under your installed skills tree (e.g. `~/.skillsloom/skills/...`)
 - Shows the stub content, writes only on approval
 
 **Test 3c — memory-system-toggle**
@@ -216,7 +216,7 @@ This invokes [`../../skills/brain-manager/workflows/brain-system-toggle.md`](../
 - [x] 3a: memory-audit listed all memory files
 - [x] 3b: memory-create proposed stub and waited for approval
 - [x] 3c: memory-system-toggle explained modes without auto-editing
-- Findings: 3a clean — no stale/bloated/orphaned files; I-6 raised (no last-updated on persona files). 3b created python-preferences.md at ~/.skillmanager/skills/development-engineer/persona/, router row added to SKILL.md. 3c correctly explained both modes and identified missing system-skills block in model.md (not present in this install — installer should add it).
+- Findings: 3a clean — no stale/bloated/orphaned files; I-6 raised (no last-updated on persona files). 3b created python-preferences.md at ~/.skillsloom/skills/development-engineer/persona/, router row added to SKILL.md. 3c correctly explained both modes and identified missing system-skills block in model.md (not present in this install — installer should add it).
 
 ---
 
@@ -224,7 +224,7 @@ This invokes [`../../skills/brain-manager/workflows/brain-system-toggle.md`](../
 
 **Goal:** Validate the persona routing works for existing skills that use `persona/`.
 
-Example source paths in this repo (same layout under `~/.skillmanager/skills/` after install):
+Example source paths in this repo (same layout under `~/.skillsloom/skills/` after install):
 - [`../../skills/development-engineer/persona/python.md`](../../skills/development-engineer/persona/python.md)
 - [`../../skills/development-engineer/persona/react.md`](../../skills/development-engineer/persona/react.md)
 
@@ -267,7 +267,7 @@ This invokes [`../../skills/skill-manager/workflows/skills-audit.md`](../../skil
 
 **Test 5b — Review one skill**
 
-> "Review the `memory` skill — is it complete and compliant?"
+> "Review the `brain-manager` skill — is it complete and compliant?"
 
 This invokes [`../../skills/skill-manager/workflows/skills-review-one.md`](../../skills/skill-manager/workflows/skills-review-one.md).
 
@@ -280,41 +280,41 @@ This invokes [`../../skills/skill-manager/workflows/skills-review-one.md`](../..
 
 ---
 
-## Phase 6 — Knowledge OS Cowork Automations
+## Phase 6 — Knowledge OS Terminal Workflows
 
-**Goal:** Verify the three Cowork scheduled task definitions are correctly configured for your environment.
+**Goal:** Verify the three terminal workflow prompts are correctly configured for your environment.
 
 > Pre-condition: you need `OBSIDIAN_ROOT` and `OBSIDIAN_META` set (check `knowledge-os/knowledge-os.env.example`). If Obsidian is not yet set up, skip this phase.
 
 **Test 6a — Environment check**
 
 ```bash
-skillmanager knowledge-os   # checks OBSIDIAN_ROOT, OBSIDIAN_META, wiki-harvest and vault-paths symlinks
+skillmanager knowledge-os   # checks OBSIDIAN_ROOT, OBSIDIAN_META, wiki-manager symlink
 ```
 
 Expected: no errors; confirms the two required skills are symlinked.
 
 **Test 6b — Inbox Process task**
 
-Review [`../../knowledge-os/cowork/task-inbox-process.txt`](../../knowledge-os/cowork/task-inbox-process.txt). Steps:
-1. Paste the task content into Claude Cowork (or run manually)
+Review the Knowledge OS terminal inbox workflow prompt. Steps:
+1. Paste the prompt content into a Claude CLI session (or run manually step-by-step)
 2. Set your real `OBSIDIAN_ROOT` and `OBSIDIAN_META` paths in the placeholders
 3. Run against a small test inbox (1-2 notes)
 4. Confirm it stops after listing pending items and waits for your approval before moving files
 
 **Test 6c — Super Wiki Refresh task**
 
-Review [`../../knowledge-os/cowork/task-super-wiki-refresh.txt`](../../knowledge-os/cowork/task-super-wiki-refresh.txt). Same process — configure paths, run on a test vault, confirm incremental sync and no auto-edits to `meta/wiki/`.
+Review the Knowledge OS terminal super-wiki-refresh workflow prompt. Same process — configure paths, run on a test vault, confirm incremental sync and no auto-edits to `meta/wiki/`.
 
 **Test 6d — Wiki Harvest Refresh**
 
-Review [`../../knowledge-os/cowork/task-wiki-harvest-refresh.txt`](../../knowledge-os/cowork/task-wiki-harvest-refresh.txt). Confirm triage of curated pages by status emoji, and that sprint card drafts require your approval.
+Review the Knowledge OS terminal wiki-harvest-refresh workflow prompt. Confirm triage of curated pages by status emoji, and that sprint card drafts require your approval.
 
-> **Gate 6:** Confirm at least `skillmanager knowledge-os` passes clean. For each Cowork task, confirm the approval gate works (it stops and waits, does not auto-move/edit).
+> **Gate 6:** Confirm at least `skillmanager knowledge-os` passes clean. For each terminal workflow, confirm the approval gate works (it stops and waits, does not auto-move/edit).
 
 **Phase 6 notes** _(fill in during testing)_:
 - [x] 6a: `skillmanager knowledge-os` passed with no errors
-- [x] 6b: inbox-process fully Cowork-driven (Phase A: raw→classified, Phase B: approved→target); classify.sh moved to knowledge-os/scripts/ as manual fallback; flat YAML frontmatter (no routing: wrapper); file processed, classified, and moved to destination — verified
+- [x] 6b: inbox-process fully terminal-driven (Phase A: raw→classified, Phase B: approved→target); classify.sh moved to knowledge-os/scripts/ as manual fallback; flat YAML frontmatter (no routing: wrapper); file processed, classified, and moved to destination — verified
 - [ ] 6c: super-wiki-refresh ran incrementally, did not auto-edit `meta/wiki/`
 - [ ] 6d: wiki-harvest triage required approval for sprint card drafts
 - Findings:
@@ -341,12 +341,12 @@ If you need to hand off or resume in a new session, use the **Session resume pro
 ```mermaid
 flowchart TD
     P0["Phase 0\nEnvironment Health"] -->|"Gate 0: doctor clean"| P1
-    P1["Phase 1\nSkill Symlinks"] -->|"Gate 1: memory visible"| P2
+    P1["Phase 1\nSkill Symlinks"] -->|"Gate 1: brain-manager visible"| P2
     P2["Phase 2\nMemory Write Flow"] -->|"Gate 2: diff + approval"| P3
     P3["Phase 3\nMemory Workflows"] -->|"Gate 3: audit/create/toggle"| P4
     P4["Phase 4\nPersona Routing"] -->|"Gate 4: per-skill memory"| P5
     P5["Phase 5\nSkill Manager Audit"] -->|"Gate 5: health report"| P6
-    P6["Phase 6\nCowork Automations"] -->|"Gate 6: approval gates"| done["Done"]
+    P6["Phase 6\nTerminal Workflows"] -->|"Gate 6: approval gates"| done["Done"]
 ```
 
 **Signal phrases to use during the session:**
@@ -366,13 +366,13 @@ Non-blocking improvements identified during testing. Append new items here; prom
 | I-2 | Cross-platform path refactor | `pending` | Replace hardcoded path strings with `pathlib.Path` throughout `skillmanager.py`. Add `link_or_copy()` helper (symlink on macOS/Linux, junction on Windows). Prerequisite for Windows support and choco/winget distribution. |
 | I-3 | Compiled binary + package manager distribution | `pending` | PyInstaller binary → Homebrew formula (macOS), `curl \| sh` bootstrap (Linux), choco/winget (Windows). Enables first-class install experience with no Python dependency. Do after I-2. |
 | I-4 | Subscription key gate + expiry check | `pending` | `update_token` required to fetch skills. Add `valid_until` field checked at session start — expired key stops skill loading. Enables token revocation. Prerequisite for Rings 2–4 of IP protection. Do after I-1. |
-| I-5 | Vendor / user overlay layer model | `pending` | Split install into `~/.skillmanager/skills/` (vendor, read-only, managed by update) and `~/.skillmanager/overrides/` (user, writable, never touched by update). LLM sees merged view; override wins on conflict. `skillmanager update` never modifies overrides. `skill-manager` skill routes edits to correct layer. Requires changes to `skillmanager.py`, `install.py`, and `skills-create.md`. |
+| I-5 | Vendor / user overlay layer model | `pending` | Split install into `~/.skillsloom/skills/` (vendor, read-only, managed by update) and `~/.skillsloom/overrides/` (user, writable, never touched by update). LLM sees merged view; override wins on conflict. `skillmanager update` never modifies overrides. `skill-manager` skill routes edits to correct layer. Requires changes to `skillmanager.py`, `install.py`, and `skills-create.md`. |
 | I-6 | `last-updated` frontmatter on persona files | `pending` | None of the persona files (`development-engineer/persona/*.md`, `wiki-harvest/persona/*.md`) carry a `last-updated` field, making automatic staleness checks (>90 days) impossible. Add `last-updated: YYYY-MM-DD` to persona frontmatter and update the `memory-create` scaffold to include it by default. |
-| I-7 | Research alternative backends to Obsidian | `pending` | The Knowledge OS Cowork automation layer is tightly coupled to Obsidian as the vault backend (OBSIDIAN_ROOT, OBSIDIAN_META). Research alternative backends (e.g. Notion, Logseq, plain markdown dirs, Foam) and document requirements for a backend-agnostic adapter layer so the skill works without Obsidian. |
+| I-7 | Research alternative backends to Obsidian | `pending` | The Knowledge OS workflow layer is tightly coupled to Obsidian as the vault backend (OBSIDIAN_ROOT, OBSIDIAN_META). Research alternative backends (e.g. Notion, Logseq, plain markdown dirs, Foam) and document requirements for a backend-agnostic adapter layer so the skill works without Obsidian. |
 | I-8 | Example user guide from verification test results | `pending` | Distill Phases 0–3 test cases (environment check, skill visibility, memory write/update/archive/audit/create/toggle) into a short "quick-start test guide" document aimed at first-time installers. Scope: run before starting a real project; covers the happy path only; links back to this plan for edge cases. |
 | I-9 | Auto-cleanup orphaned skills on audit | `done` | `formerly` field added to `brain-manager/SKILL.md`. `skillmanager audit` now auto-removes orphan symlinks that match a `formerly` entry; unknown orphans still flagged for manual review. `--dry-run` flag added to audit. `skillmanager update` removes old skill dirs on rename. 4 new tests added, all passing. |
-| I-10 | Merge `core/ingest.md` into Skillforge | `pending` | Raw→research pipeline from choreokit. Depends on domain skills (bible-study, product, etc.) being live and validated. Adds `op: ingest` to all domain master skills. |
-| I-11 | Merge `core/schema-sync.md` into Skillforge | `pending` | Graph/schema sync skill from choreokit. Depends on `schema/entities.json` vault convention being adopted. |
-| I-12 | Merge `classify/concierge.md` into Skillforge | `pending` | Conversational capture skill from choreokit. Could become a Cowork task (`task-concierge.txt`) or a standalone skill. Trigger: `op: concierge` or `capture this:`. |
+| I-10 | Merge `core/ingest.md` into SkillsLoom | `pending` | Raw→research pipeline from choreokit. Depends on domain skills (bible-study, product, etc.) being live and validated. Adds `:sl ingest` to all domain master skills. |
+| I-11 | Merge `core/schema-sync.md` into SkillsLoom | `pending` | Graph/schema sync skill from choreokit. Depends on `schema/entities.json` vault convention being adopted. |
+| I-12 | Merge `classify/concierge.md` into SkillsLoom | `pending` | Conversational capture skill from choreokit. Could become a terminal workflow prompt (`task-concierge.txt`) or a standalone skill. Trigger: `:sl concierge` or `capture this:`. |
 
 Status values: `pending` → `in-progress` → `done` or `deferred: <reason>`

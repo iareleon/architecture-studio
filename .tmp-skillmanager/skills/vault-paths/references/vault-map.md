@@ -30,7 +30,7 @@
 | Products | `/Users/leond/Development/products` | Product repos |
 | Projects | `/Users/leond/Development/projects` | Project repos |
 | Sites | `/Users/leond/Development/sites` | Website repos |
-| Skill Forge | `/Users/leond/Development/projects/project-skill-manager` | Skill Forge source |
+| SkillsLoom | `/Users/leond/Development/projects/project-skill-manager` | SkillsLoom source |
 | Scripts | `/Users/leond/Development/scripts` | Utility scripts |
 
 ## Key files — always read before acting

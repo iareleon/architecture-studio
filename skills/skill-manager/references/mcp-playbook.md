@@ -56,7 +56,7 @@ For SSE servers, create `~/Library/LaunchAgents/com.user.mcp-<name>.plist`:
   <array>
     <string>/usr/local/bin/uv</string>
     <string>run</string>
-    <string>${SKILLFORGE_DIR}/mcp/skills_server.py</string>
+    <string>${SKILLSLOOM_DIR}/mcp/skills_server.py</string>
   </array>
   <key>RunAtLoad</key><true/>
   <key>KeepAlive</key><true/>

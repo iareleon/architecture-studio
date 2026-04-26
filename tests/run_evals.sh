@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# run_evals.sh — LLM integration tests for Skill Forge skills
+# run_evals.sh — LLM integration tests for SkillsLoom skills
 #
 # Loads each *.eval.md file, sends the prompt to the Anthropic API with the
 # skill's SKILL.md body as the system prompt, then checks structural assertions
@@ -26,8 +26,9 @@ set -euo pipefail
 # ---------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-SKILLFORGE_DIR="${SKILLFORGE_DIR:-$REPO_ROOT}"
-SKILLS_DIR="${SKILLFORGE_DIR}/skills"
+# Repository root that contains skills/ (defaults to this repo). Not the same as $HOME/.skillsloom.
+SKILLSLOOM_WORKTREE="${SKILLSLOOM_WORKTREE:-$REPO_ROOT}"
+SKILLS_DIR="${SKILLSLOOM_WORKTREE}/skills"
 
 # ---------------------------------------------------------------------------
 # Color helpers
@@ -43,7 +44,7 @@ fi
 # Guard: skip gracefully if no API key
 # ---------------------------------------------------------------------------
 if [[ -z "${ANTHROPIC_API_KEY:-}" ]]; then
-  printf '%s=== Skill Forge LLM Evals ===%s\n\n' "$BOLD" "$RESET"
+  printf '%s=== SkillsLoom LLM Evals ===%s\n\n' "$BOLD" "$RESET"
   printf '%s[SKIP]%s ANTHROPIC_API_KEY is not set — skipping all evals.\n' "$YELLOW" "$RESET"
   printf '       Set it and re-run: ANTHROPIC_API_KEY=sk-... bash tests/run_evals.sh\n'
   exit 0
@@ -320,7 +321,7 @@ fi
 # ---------------------------------------------------------------------------
 # Run all evals
 # ---------------------------------------------------------------------------
-printf '%s=== Skill Forge LLM Evals ===%s\n\n' "$BOLD" "$RESET"
+printf '%s=== SkillsLoom LLM Evals ===%s\n\n' "$BOLD" "$RESET"
 
 passed=0 failed=0
 

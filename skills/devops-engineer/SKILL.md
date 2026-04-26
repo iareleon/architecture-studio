@@ -1,9 +1,10 @@
 ---
 name: devops-engineer
-description: DevOps and IaC — apply infrastructure-as-code, CI/CD, cloud patterns, and Terraform discovery/HCL. Invoke for pipelines, remote state, modules, or IaC scan/scaffold; use cloud-engineer for live cloud inventory.
+description: "DevOps and IaC — CI/CD, Terraform, modules, remote state, pipelines, and HCL/scan workflows; pair with cloud-engineer for live cloud inventory. Use when the user asks to fix a pipeline, write a workflow, set up GitHub Actions, wrangle state, or scaffold Terraform — even if they say \"the deploy is broken\" without naming the tool."
 metadata:
   version: "1.1"
   disable-model-invocation: true
+  formerly: devops
 ---
 # DevOps (SME + IaC)
 

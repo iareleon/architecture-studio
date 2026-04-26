@@ -1,22 +1,17 @@
 ---
 name: skill-manager
-description: Create, audit, and lifecycle-manage skills under skills/. Invoke when creating, reviewing, refining, detecting, or auditing any skill.
+description: Create, audit, refine, and lifecycle-manage skills under skills/. Use this skill whenever the user wants to create a new skill, scaffold a SKILL.md, capture a repeatable workflow as a skill, check whether a skill exists for a task, review or improve an existing skill, detect gaps in the skill library, audit skill quality or naming, propose a skill to the repository, or asks anything like "can you make a skill for this?", "do I have a skill that does X?", "review my skills", or "let's improve this skill". Trigger even when the user describes a workflow they want to automate — that's a skill creation opportunity.
 metadata:
-  version: "2.0"
+  version: "2.1"
   disable-model-invocation: true
 ---
 # Skill Manager
 
 **Single responsibility:** create, list, audit, and lifecycle-manage **skills** under `skills/` with the `skillmanager` CLI. Memory edits → `brain-manager` skill. Knowledge base routing → `wiki-manager` or your configured knowledge base skill.
 
-## Global Rule — applies to every skill and agent
+## Working principles
 
-> **No skill or agent may take any action unless confidence ≥ 95% AND the user has explicitly approved.**
-
-- If confidence < 95%: state the uncertainty, present options, ask for guidance. **Never guess or invent.**
-- Every consequential action (write, delete, rename, audit) requires explicit user sign-off before execution.
-- **Human in the loop is non-negotiable.** Skills amplify human capability — they do not replace human judgement. The human always has the final say.
-- When advising on best practices, distinguish clearly between known convention and personal recommendation.
+Skills get loaded into every future conversation that triggers them — a mistake baked into a skill propagates to every subsequent use. For this reason, confirm intent before writing or deleting anything, surface uncertainty rather than guessing, and present options when more than one valid path exists. Distinguish personal recommendation from established convention when advising on best practices.
 
 ## Routing
 
@@ -40,7 +35,7 @@ metadata:
 
 ## Conventions
 
-- New skills only under `${SKILLMANAGER_DIR}/skills/<name>/`; directory name = kebab-case; `name:` in frontmatter must match.
+- New skills only under `${SKILLSLOOM_DIR}/skills/<name>/`; directory name = kebab-case; `name:` in frontmatter must match.
 - Set `metadata.status` in `SKILL.md` (default `active`); run `skillmanager audit` to update symlinks.
 - After authoring: `Run: skillmanager audit`.
 - No personal data, paths, or credentials in any SKILL.md.

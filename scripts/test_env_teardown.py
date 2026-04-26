@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""test_env_teardown.py — remove the Skill Forge test environment
+"""test_env_teardown.py — remove the SkillsLoom test environment
 
 Removes:
   .tmp-skillmanager/               temporary install directory

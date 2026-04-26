@@ -1,10 +1,10 @@
-# Skill Forge
+# SkillsLoom
 
 [![Validate](https://github.com/Choreogrifi/skill-manager/actions/workflows/validate.yml/badge.svg)](https://github.com/Choreogrifi/skill-manager/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Docs](https://img.shields.io/badge/docs-skill--forge-blue)](https://choreogrifi.github.io/skill-manager/)
+[![Docs](https://img.shields.io/badge/docs-SkillsLoom-blue)](https://choreogrifi.github.io/skill-manager/)
 
-**Skill Forge gives your AI assistant a permanent memory and a set of expert skills, so it does better work and costs less to run.**
+**SkillsLoom gives your AI assistant a permanent memory and a set of expert skills, so it does better work and costs less to run.**
 
 ---
 
@@ -15,6 +15,8 @@
 - **Loads only what it needs.** Skills and memory are loaded on demand and unloaded when done. You never pay tokens for context you are not using.
 
 **System of record:** your configured knowledge base (wiki, vault, or doc system) holds canonical knowledge. Bundled skills **augment** you — conventions, checklists, and drafts for your review — not a separate automation silo in parallel with that structure.
+
+**UAT and scope:** validate the framework by driving work from a terminal with **Claude CLI** (step-by-step, with human approval where skills require it). **Scheduled or product automation is intentionally out of scope until UAT passes**; after that, automation can be layered on the same procedures already encoded in the skill library. For day-to-day use of every skill under `skills/`, see **[PLAYBOOK.md](PLAYBOOK.md)**.
 
 ---
 
@@ -51,7 +53,7 @@ AI:     Reads both sides of the conflict, explains the trade-off,
 ```
 User:   Add a new serverless job for the order processor
 
-With the `devops` skill active:
+With the `devops-engineer` skill active:
 AI:     Discovers your existing Terraform folder, reads your naming
         conventions, drafts the full HCL module, and confirms before
         writing a single file.
@@ -61,7 +63,7 @@ AI:     Discovers your existing Terraform folder, reads your naming
 ```
 User:   Write a LinkedIn post about our new open-source release
 
-With `social-media` active:
+With `social-media-manager` active:
 AI:     Asks for your audience and tone, drafts a post in your brand
         voice with the right LinkedIn formatting, and iterates until
         you approve.
@@ -86,32 +88,13 @@ skillmanager doctor      # check your environment
 
 ## Skill catalogue
 
-Each **skill** is one directory under `skills/<name>/` (routers with `workflows/`; no separate `-sme` / `-wf` installs).
-
-| Skill | What it does |
-|---|---|
-| `architect` | Systems architecture: patterns, ADRs, C4 |
-| `development-engineer` | Implementation: SOLID, DI, typing |
-| `devops` | CI/CD, Terraform, automation (`workflows/terraform-main.md`, …) |
-| `security` | IAM, secrets, OWASP |
-| `tester` | Test strategy, TDD |
-| `git` | Conventions, GitHub/GitLab procedures, local git, commits (`workflows/`) |
-| `cloud-engineer` | Cloud infrastructure inventory + SME baseline (defaults to GCP; configure for other providers) |
-| `diagrammer` | Diagram types and Mermaid (`workflows/mermaid.md`) |
-| `documenter` | READMEs, HLD, ADR, audit/update (`workflows/documenter-menu.md`, …) |
-| `social-media` | Social, video, long-form (`workflows/social-media-menu.md`, …) |
-| `skill-manager` | Author and audit skills; CLI for lifecycle |
-| `memory` | Memory file CRUD, librarian flows |
-| `project-manager` | Project task flows — create, update, query work items (configure your tool via references) |
-| `personal` | Focus governance, drift detection, and meeting/decision capture; soul-layer writing optional |
-| `vault-paths` | Knowledge base path resolution — multi-workspace routing and write rules |
-| `wiki-harvest` | Structured brain-dump sessions to update wiki or knowledge-base pages |
+Each **skill** is one directory under `skills/<name>/` (routers with `workflows/`; no separate `-sme` / `-wf` installs). The **canonical list**, descriptions, and workflow entry points for the current repo are in **[PLAYBOOK.md](PLAYBOOK.md)** (covers `skills/` only).
 
 ---
 
 ## Personalise it
 
-After install, use the `memory` skill to build up memory as you work:
+After install, use the **`brain-manager`** skill to build up memory as you work:
 
 ```bash
 # See what memory files are loaded and their token cost

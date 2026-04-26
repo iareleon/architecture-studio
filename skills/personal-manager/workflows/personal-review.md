@@ -62,7 +62,7 @@ After 3+ weekly reviews, check for recurring patterns:
 - Always drifting to the same activity → may need to be scheduled, not avoided
 - Always missing social media → system friction, not motivation problem
 - Soul layer empty for weeks → governing intelligence not being fed
-- Skill Forge skills queued but not built → capability debt accumulating
+- SkillsLoom skills queued but not built → capability debt accumulating
 
 Name the pattern. One sentence. Do not problem-solve in this subflow.
 Route to `workflows/personal-drift.md` if a pattern needs addressing.

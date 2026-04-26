@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""test_env_setup.py — scaffold an isolated Skill Forge test environment
+"""test_env_setup.py — scaffold an isolated SkillsLoom test environment
 
 Creates a temporary install directory that mirrors the real install structure
 without touching production skill directories or LLM context files.
@@ -8,8 +8,8 @@ LLM test symlinks are created at {LLM_DIR}/skills/<name> only for skills
 that have no existing production symlink at that path. Each created symlink
 is recorded in $TMP_SKILLMANAGER_DIR/.test-manifest for clean teardown.
 
-IMPORTANT: SKILLMANAGER_DIR is production-only. This script manages
-TMP_SKILLMANAGER_DIR exclusively. Never set SKILLMANAGER_DIR manually for testing.
+IMPORTANT: SKILLSLOOM_DIR is production-only. This script manages
+TMP_SKILLMANAGER_DIR exclusively. Never set SKILLSLOOM_DIR manually for testing.
 
 Usage:
   python3 scripts/test_env_setup.py
@@ -64,9 +64,20 @@ def header(msg: str) -> None:
 _RESERVED = {"review", "deactivated", "staging", "decommissioned", "sme", "workflow"}
 
 
+def _production_config_file() -> Path:
+    """Match skillmanager.py: ~/.skillsloom/config.yaml first, then legacy ~/.skillmanager."""
+    primary = _HOME / ".skillsloom" / "config.yaml"
+    if primary.is_file():
+        return primary
+    legacy = _HOME / ".skillmanager" / "config.yaml"
+    if legacy.is_file():
+        return legacy
+    return primary
+
+
 def _configured_llm_dirs() -> list[Path]:
     """Resolve configured LLM skill dirs from config.yaml."""
-    config_file = _HOME / ".skillmanager" / "config.yaml"
+    config_file = _production_config_file()
     dirs = []
     if config_file.exists():
         for line in config_file.read_text(encoding="utf-8").splitlines():
@@ -106,7 +117,6 @@ def main() -> None:
     repo_root = script_dir.parent
     repo_skills_dir = repo_root / "skills"
 
-    config_file = _HOME / ".skillmanager" / "config.yaml"
     tmp_skillmanager_dir = repo_root / ".tmp-skillmanager"
     tmp_skills_dir = tmp_skillmanager_dir / "skills"
     test_manifest = tmp_skillmanager_dir / ".test-manifest"
@@ -200,9 +210,9 @@ def main() -> None:
     print(f"{BOLD}Test skills are visible to your LLM at: {{LLM_DIR}}/skills/<name>{RESET}")
     print("Production skills are unchanged.")
     print()
-    print(f"{BOLD}IMPORTANT:{RESET} SKILLMANAGER_DIR is production-only.")
+    print(f"{BOLD}IMPORTANT:{RESET} SKILLSLOOM_DIR is production-only.")
     print("This script manages TMP_SKILLMANAGER_DIR only.")
-    print("Never set SKILLMANAGER_DIR manually for testing.")
+    print("Never set SKILLSLOOM_DIR manually for testing.")
     print(f"\nTo set the test variable in your shell:")
     if IS_WINDOWS:
         print(f'  set TMP_SKILLMANAGER_DIR="{tmp_skillmanager_dir}"')

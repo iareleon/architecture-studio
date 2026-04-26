@@ -1,6 +1,6 @@
 ---
 name: product-manager
-description: Orchestrates the product Obsidian vault — idea research, viability assessment, design artifact import, and promotion to wiki. Invoke for any product vault operation.
+description: "Product Obsidian vault — idea research, viability, competitive framing, design imports, and promotion to the wiki. Use when the user is shaping a bet, a PRD sketch, a customer problem, or moving product thinking into the wiki — even if the file is a rough note in `raw/` with no product jargon."
 metadata:
   version: "1.0"
   disable-model-invocation: true
@@ -17,11 +17,11 @@ product vault session after reading the vault's `CLAUDE.md`.
 
 For each sub-skill invocation, resolve in order:
 1. `~/Obsidian/product/.skills-override/{sub-skill-name}.md` — subscriber custom
-2. `~/.claude/skills/product-manager/` — Skillforge default
+2. `~/.claude/skills/product-manager/` — SkillsLoom default
 
 ## Operations
 
-### op: research {idea}
+### :sl research {idea}
 
 Research a product idea or concept.
 
@@ -30,7 +30,7 @@ Research a product idea or concept.
 3. Append to `_os/log.md`: `## [date] ingest | {idea-slug}`
 4. Report: `Research complete → research/active/{idea-slug}.md`
 
-### op: viability {idea}
+### :sl viability {idea}
 
 Run a full viability assessment on a researched idea.
 
@@ -42,7 +42,7 @@ Run a full viability assessment on a researched idea.
 5. Set `status: viability-assessed`
 6. Append to `_os/log.md`: `## [date] viability | {idea-slug}`
 
-### op: design-import {raw-file}
+### :sl design-import {raw-file}
 
 Import a Claude design artifact from `raw/` and convert it to a structured spec.
 
@@ -52,7 +52,7 @@ Import a Claude design artifact from `raw/` and convert it to a structured spec.
 4. Append to `_os/log.md`: `## [date] design-import | {idea-slug}`
 5. Report: `Design spec complete → research/active/{idea-slug}-design-spec.md`
 
-### op: promote {idea}
+### :sl promote {idea}
 
 Promote an approved idea from `approved/` to `wiki/`.
 

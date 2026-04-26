@@ -99,9 +99,9 @@ On `cancel`: stop — nothing is written.
 
 ### 7. Write Files
 
-All files are written to `${SKILLMANAGER_DIR}/skills/` — never to the working directory.
+All files are written to `${SKILLSLOOM_DIR}/skills/` — never to the working directory.
 
-Target: `${SKILLMANAGER_DIR}/skills/<name>/` (one folder per skill).
+Target: `${SKILLSLOOM_DIR}/skills/<name>/` (one folder per skill).
 
 1. Create the skill directory
 2. Write `SKILL.md` using the appropriate template:
@@ -112,7 +112,7 @@ Target: `${SKILLMANAGER_DIR}/skills/<name>/` (one folder per skill).
 5. Check `references/marketplace-overlap.md` — warn on any conflict
 6. Confirm:
    ```
-   Created: ${SKILLMANAGER_DIR}/skills/<type>/<name>/
+   Created: ${SKILLSLOOM_DIR}/skills/<type>/<name>/
    Files:   SKILL.md<, subflow files, reference files>
    ```
 
@@ -127,7 +127,7 @@ Offer to create a memory stub: ask the user to invoke `brain-manager` for that.
 
 ## Guidelines
 
-- Never write skill files outside `${SKILLMANAGER_DIR}/skills/`.
+- Never write skill files outside `${SKILLSLOOM_DIR}/skills/`.
 - A skill with a single operation keeps everything in `SKILL.md` — do not split prematurely.
 - Reference rule: any content >10 lines needed for only one step belongs in `references/`, not inline.
 - Subflow files have no frontmatter — they are markdown documents loaded lazily by the parent SKILL.md.

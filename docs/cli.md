@@ -8,14 +8,14 @@ title: CLI Reference
 
 | Variable | Default | Description |
 |---|---|---|
-| `SKILLMANAGER_DIR` | `~/.skillmanager` | Skill root directory (read from `~/.skillmanager/config.yaml`) |
+| `SKILLSLOOM_DIR` | `~/.skillsloom` | Skill root directory (read from `~/.skillsloom/config.yaml`) |
 | `OBSIDIAN_ROOT` | `~/Obsidian` | Used by `skillmanager knowledge-os` (Obsidian base path) |
 | `OBSIDIAN_META` | `~/Obsidian/meta` | Master Knowledge OS vault path |
 | `CHOREOKIT_DIR` | (unset) | Optional; separate op-skills tree, reported by `knowledge-os` if set |
 
 Override for safe testing:
 ```bash
-SKILLMANAGER_DIR=/tmp/sf-test skillmanager <command>
+SKILLSLOOM_DIR=/tmp/sf-test skillmanager <command>
 ```
 
 ---
@@ -81,7 +81,7 @@ skillmanager doctor
 
 **Checks:**
 
-- Config file (`~/.skillmanager/config.yaml`) exists
+- Config file (`~/.skillsloom/config.yaml`) exists
 - Install directory exists
 - Skills directory exists and is writable
 - LLM target directories exist
@@ -93,7 +93,7 @@ skillmanager doctor
 
 ## `skillmanager knowledge-os`
 
-Check that the **Obsidian meta** master vault exists, expected paths are present, and that **wiki-harvest** and **vault-paths** are symlinked in `~/.claude/skills` after `skillmanager audit`. If `CHOREOKIT_DIR` is set, verifies that directory exists.
+Check that the **Obsidian meta** master vault exists, expected paths are present, and that **wiki-manager** (and related Knowledge OS skills) are symlinked in `~/.claude/skills` after `skillmanager audit`. If `CHOREOKIT_DIR` is set, verifies that directory exists.
 
 ```bash
 skillmanager knowledge-os
@@ -316,7 +316,7 @@ skillmanager git cherry-pick abc1234
 
 ## `skillmanager uninstall`
 
-Interactively removes Skill Forge from the system. Requires typing `uninstall` to confirm.
+Interactively removes SkillsLoom from the system. Requires typing `uninstall` to confirm.
 
 ```bash
 skillmanager uninstall
@@ -326,12 +326,12 @@ skillmanager uninstall
 
 1. **Symlinks** — removes all skill symlinks from `~/.claude/skills/` and `~/.gemini/skills/`.
 2. **Binary** — removes `~/.local/bin/skillmanager`.
-3. **Skill data** (optional, second confirmation) — removes `$SKILLMANAGER_DIR` including all skills, memory files, and `config.yaml`.
+3. **Skill data** (optional, second confirmation) — removes `$SKILLSLOOM_DIR` including all skills, memory files, and `config.yaml`.
 4. **PATH entries** (optional) — removes the `export PATH` line added to `~/.bashrc` / `~/.zshrc` by the installer.
 
 Skill data is never deleted unless you explicitly answer `yes` to the separate confirmation in step 3. This means an uninstall followed by a reinstall preserves all your skills.
 
-> **Note**: The install script rejects git repositories as `SKILLMANAGER_DIR`. If you see an error at install time, choose a path outside any cloned repo (e.g. `~/.skillmanager`).
+> **Note**: The install script rejects git repositories as `SKILLSLOOM_DIR`. If you see an error at install time, choose a path outside any cloned repo (e.g. `~/.skillsloom`).
 
 ---
 
@@ -340,8 +340,8 @@ Skill data is never deleted unless you explicitly answer `yes` to the separate c
 Display the `SKILL.md` content for any installed skill — frontmatter summary followed by the full body.
 
 ```bash
-skillmanager show git
-skillmanager show architect
+skillmanager show git-manager
+skillmanager show architect-manager
 ```
 
 Useful for inspecting a skill's constraints before invoking it, or piping the content to your clipboard for context.
@@ -356,11 +356,11 @@ Apply skill updates from a source directory. Updates pristine (unmodified) skill
 skillmanager update --source <path>
 ```
 
-`<path>` must be a directory that contains a `skills/` subdirectory — a new download or any directory structured like the Skill Forge repository. The CLI does not manage or clone any git repository.
+`<path>` must be a directory that contains a `skills/` subdirectory — a new download or any directory structured like the SkillsLoom repository. The CLI does not manage or clone any git repository.
 
 **Behaviour for each changed file:**
 - **Pristine** (not customised since install) → updated in place automatically
-- **Customised** (differs from install-time checksum) → copied to `$SKILLMANAGER_DIR/staging/` for review
+- **Customised** (differs from install-time checksum) → copied to `$SKILLSLOOM_DIR/staging/` for review
 
 After a run with staged files:
 ```bash
@@ -378,9 +378,9 @@ Manage new upstream versions of skills that were staged by `skillmanager update`
 
 ```bash
 skillmanager staging ls                  # list all staged updates
-skillmanager staging diff git         # diff the staged vs installed version of git
-skillmanager staging accept git       # accept the staged version (overwrites your customisation)
-skillmanager staging dismiss git      # discard the staged version (keep your customisation)
+skillmanager staging diff git-manager         # diff the staged vs installed version of git-manager
+skillmanager staging accept git-manager       # accept the staged version (overwrites your customisation)
+skillmanager staging dismiss git-manager      # discard the staged version (keep your customisation)
 ```
 
 ---
@@ -393,7 +393,7 @@ Interactive wizard to create environment-specific reference files and workflow s
 skillmanager customize
 ```
 
-For each active SME, the wizard asks whether you want to create a matching workflow skill with environment-specific context (e.g. project IDs, naming conventions, team standards). New workflow skills are saved to `$SKILLMANAGER_DIR/skills/<name>/` and activated automatically.
+For each active SME, the wizard asks whether you want to create a matching workflow skill with environment-specific context (e.g. project IDs, naming conventions, team standards). New workflow skills are saved to `$SKILLSLOOM_DIR/skills/<name>/` and activated automatically.
 
 Run this after initial install to personalise the generic skills to your stack.
 
@@ -405,7 +405,7 @@ Check markdown quality of all SKILL.md files, or a specific file if provided.
 
 ```bash
 skillmanager lint                        # check all skills
-skillmanager lint skills/git/SKILL.md  # check one file
+skillmanager lint skills/git-manager/SKILL.md  # check one file
 ```
 
 Uses `markdownlint` when available. Falls back to basic checks (frontmatter presence, trailing whitespace, H1 heading) if not installed.

@@ -4,7 +4,7 @@ Switches the system skills mode in `model.md` between **always-on** and **manual
 
 ## Detect Current Mode
 
-Read `${SKILLFORGE_DIR}/model.md`. Find the block between:
+Read `${SKILLSLOOM_DIR}/model.md`. Find the block between:
 ```
 <!-- system-skills: <mode> -->
 ...
@@ -31,10 +31,10 @@ Switch to manual mode? (yes / no)
 
 ## Apply on Approval
 
-1. Read the full contents of `${SKILLFORGE_DIR}/model.md`
+1. Read the full contents of `${SKILLSLOOM_DIR}/model.md`
 2. Replace everything between `<!-- system-skills: * -->` and `<!-- /system-skills -->` (inclusive) with the contents of the appropriate template (under the `skill-manager` skill, shipped with the repo):
-   - Switching to manual → `${SKILLFORGE_DIR}/skills/skill-manager/templates/persona/system-skills-manual.md`
-   - Switching to always-on → `${SKILLFORGE_DIR}/skills/skill-manager/templates/persona/system-skills-always-on.md`
+   - Switching to manual → `${SKILLSLOOM_DIR}/skills/skill-manager/templates/persona/system-skills-manual.md`
+   - Switching to always-on → `${SKILLSLOOM_DIR}/skills/skill-manager/templates/persona/system-skills-always-on.md`
 3. Write the updated file
 4. Confirm: `"System skills set to <new-mode>. Restart your Claude session for the change to take effect."`
 

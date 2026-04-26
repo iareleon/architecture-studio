@@ -27,14 +27,14 @@ bash scripts/install.sh
 ```
 
 The installer will prompt you for:
-- **Install directory** — where Skill Forge assets live (default: `~/.skillmanager`)
+- **Install directory** — where SkillsLoom assets live (default: `~/.skillsloom`)
 - **LLM targets** — which LLMs you use: `claude`, `gemini`, or both
 - **Email** — optional, for skill proposal notifications
-- **System skills mode** — `Always-on` (skill detection and memory management embedded in `model.md`, active every session) or `Manual` (invoke `/skill-manager` or `/memory` when needed). Default: `Manual`
+- **System skills mode** — `Always-on` (skill detection and memory management embedded in `model.md`, active every session) or `Manual` (invoke `/skill-manager` or `/brain-manager` when needed). Default: `Manual`
 
 It then:
 - Detects available tools (`git`, `gh`, `gcloud`, `terraform`) and warns if any are missing
-- Writes your configuration to `~/.skillmanager/config.yaml`
+- Writes your configuration to `~/.skillsloom/config.yaml`
 - Copies the starter skills (never overwrites existing ones)
 - Creates symlinks for all `active` skills in your LLM target directories
 - Installs the `skillmanager` CLI to `~/.local/bin/skillmanager`
@@ -75,14 +75,14 @@ bash scripts/test-env-teardown.sh
 - Removes only the symlinks listed in `.test-manifest` — production symlinks are never touched.
 - Removes the `.tmp-skillmanager/` directory entirely.
 
-**Boundary rule — `SKILLMANAGER_DIR` vs `TMP_SKILLMANAGER_DIR`:**
+**Boundary rule — `SKILLSLOOM_DIR` vs `TMP_SKILLMANAGER_DIR`:**
 
 | Variable | Purpose | Managed by |
 |---|---|---|
-| `SKILLMANAGER_DIR` | Production install (`~/.skillmanager` by default) | `install.sh` and `uninstall` only |
+| `SKILLSLOOM_DIR` | Production install (`~/.skillsloom` by default) | `install.sh` and `uninstall` only |
 | `TMP_SKILLMANAGER_DIR` | Test environment (`.tmp-skillmanager/` in repo) | `test-env-setup.sh` and `test-env-teardown.sh` |
 
-Never set `SKILLMANAGER_DIR` manually for testing — doing so risks corrupting your production configuration.
+Never set `SKILLSLOOM_DIR` manually for testing — doing so risks corrupting your production configuration.
 
 ## First Commands
 

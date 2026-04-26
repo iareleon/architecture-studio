@@ -1,6 +1,6 @@
 ---
 name: business-manager
-description: Orchestrates the business Obsidian vault — strategy research, client briefs, and promotion to wiki. Invoke for any business vault operation.
+description: "Business Obsidian vault — strategy research, market/competitive notes, client briefs, and promotion to the wiki. Use when the user is capturing deals, writing positioning, building a case, or needs anything promoted from the business vault — even if they call it a \"work note\" or a \"meeting follow-up.\""
 metadata:
   version: "1.0"
   disable-model-invocation: true
@@ -17,11 +17,11 @@ business vault session after reading the vault's `CLAUDE.md`.
 
 For each sub-skill invocation, resolve in order:
 1. `~/Obsidian/business/.skills-override/{sub-skill-name}.md` — subscriber custom
-2. `~/.claude/skills/business-manager/` — Skillforge default
+2. `~/.claude/skills/business-manager/` — SkillsLoom default
 
 ## Operations
 
-### op: research {topic}
+### :sl research {topic}
 
 Research a business strategy topic or decision.
 
@@ -30,7 +30,7 @@ Research a business strategy topic or decision.
 3. Append to `_os/log.md`: `## [date] ingest | {topic-slug}`
 4. Report: `Research complete → research/active/{topic-slug}.md`
 
-### op: brief {client}
+### :sl brief {client}
 
 Generate or update a client engagement brief.
 
@@ -42,7 +42,7 @@ Generate or update a client engagement brief.
 5. Append to `_os/log.md`: `## [date] ingest | {client-slug}-brief`
 6. Report: `Brief drafted → research/active/{client-slug}-brief.md`
 
-### op: promote {slug}
+### :sl promote {slug}
 
 Promote approved research or brief from `approved/` to `wiki/`.
 

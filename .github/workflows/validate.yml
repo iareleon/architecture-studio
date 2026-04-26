@@ -239,15 +239,15 @@ jobs:
       - name: Smoke test — install to temp environment
         run: |
           set -euo pipefail
-          export SKILLMANAGER_DIR=/tmp/sf-test
+          export SKILLSLOOM_DIR=/tmp/sf-test
           echo -e "claude\n\n\n\n\n\n" | python3 scripts/install.py || true
           export PATH="$HOME/.local/bin:$PATH"
-          SKILLMANAGER_DIR=/tmp/sf-test python3 scripts/skillmanager.py ls
+          SKILLSLOOM_DIR=/tmp/sf-test python3 scripts/skillmanager.py ls
 
       - name: Smoke test — idempotency
         run: |
           set -euo pipefail
-          export SKILLMANAGER_DIR=/tmp/sf-test-idem
+          export SKILLSLOOM_DIR=/tmp/sf-test-idem
           echo -e "claude\n\n\n\n\n\n" | python3 scripts/install.py || true
           echo -e "claude\n\n\n\n\n\n" | python3 scripts/install.py || true
           echo "Idempotency check passed."
@@ -275,5 +275,5 @@ jobs:
       - name: Run LLM evals
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          SKILLMANAGER_DIR: ${{ github.workspace }}
+          SKILLSLOOM_WORKTREE: ${{ github.workspace }}
         run: bash tests/run_evals.sh

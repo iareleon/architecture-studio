@@ -15,7 +15,7 @@ Ask what to create:
 ### 2. If persona (B)
 
 - Confirm skill id and a short `kebab-case` filename (e.g. `local-overrides`, `meridian`, `python`).
-- Default path: `${SKILLFORGE_DIR}/skills/<skill-id>/persona/<name>.md` (create `persona/` if needed).
+- Default path: `${SKILLSLOOM_DIR}/skills/<skill-id>/persona/<name>.md` (create `persona/` if needed).
 - Add a one-line load hint in the parent skill’s `SKILL.md` (router table) if it does not already list this file.
 
 ### 3. If project (A)
@@ -25,7 +25,7 @@ Ask what to create:
 
 ### 4. If legacy (C)
 
-- Path: `${SKILLFORGE_DIR}/skills/<name>/memory/baseline.md` (create `memory/` if needed). Prefer (A) or (B) instead for new work.
+- Path: `${SKILLSLOOM_DIR}/skills/<name>/memory/baseline.md` (create `memory/` if needed). Prefer (A) or (B) instead for new work.
 
 ### 5. Choose a scaffold (style hint)
 

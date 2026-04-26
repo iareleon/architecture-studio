@@ -40,7 +40,7 @@ metadata:
 
 ## Conventions
 
-- New skills only under `${SKILLMANAGER_DIR}/skills/<name>/`; directory name = kebab-case; `name:` in frontmatter must match.
+- New skills only under `${SKILLSLOOM_DIR}/skills/<name>/`; directory name = kebab-case; `name:` in frontmatter must match.
 - Set `metadata.status` in `SKILL.md` (default `active`); run `skillmanager audit` to update symlinks.
 - After authoring: `Run: skillmanager audit`.
 - No personal data, paths, or credentials in any SKILL.md.

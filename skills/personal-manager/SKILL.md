@@ -1,9 +1,10 @@
 ---
 name: personal-manager
-description: Focus governance, drift detection, and meeting/decision capture for project work. Invoke for alignment checks, session drift, or when capturing meeting notes and decisions. Soul-layer writing (reflections, fears, goals) is an optional personal extension — configure via wiki-manager config if needed.
+description: "Focus, drift checks, and meeting/decision capture for project work; optional soul-style reflective notes if configured via wiki-manager. Use when the user says they feel scattered, want alignment (\"am I on track?\"), need meeting actions or a decision log, or asks for a reflective / soul note path — even if they only tag #focus or dump a brain dump of worries."
 metadata:
   version: "1.1"
   disable-model-invocation: true
+  formerly: personal
 ---
 # Personal
 
@@ -25,7 +26,7 @@ Align to the active tracks in `references/current-tracks.md`. Does not judge. Na
 
 **Triggers (focus):** "Am I on track", "what should I focus on", "I feel scattered"; `#focus` capture; 90+ minutes without clear output; new topic before finishing current; 3+ ideas in one session without actioning.
 
-**Core principles (focus):** name it, don't fix it. One question — never a list. No lectures. Read `references/current-tracks.md` before any focus check.
+**Core principles (focus):** name it, don't fix it. A single, pointed question works better than a list of advice — the user can answer and move; a list reads like a lecture. Read `references/current-tracks.md` before any focus check.
 
 ## Subflows (soul / personal workspace — optional extension)
 
@@ -33,85 +34,38 @@ Align to the active tracks in `references/current-tracks.md`. Does not judge. Na
 
 | File | When |
 |------|------|
-| `workflows/personal-soul-write.md` | New reflective note (reflections, fears, goals — never sanitise) |
+| `workflows/personal-soul-write.md` | New reflective note (reflections, fears, goals) |
 | `workflows/personal-soul-route.md` | Route a reflective note to an operational workspace (explicit user instruction only) |
 
 **Triggers (soul):** fears about building or losing direction; personal objectives; journey anxiety; honest progress; soul-level *why*.
 
-**Immutable rules (soul):** never sanitise, reframe, or resolve emotional content. Never route to operational workspaces without explicit user instruction. No action plans or "resolution" in a soul note. **After a write:** one line only, e.g. `Soul note written: personal/{slug}.md`.
+**Soul content:** keep the user’s language — sanitising or “fixing” emotion strips what they came back to read. Route out of the soul layer only when they explicitly say so; surprise moves break trust. Skip action plans or forced resolution in a soul note: the value is showing up, not closing the loop in one pass. **After a write:** one line only, e.g. `Soul note written: personal/{slug}.md`.
 
 ## References
 
 - `references/current-tracks.md` — active tracks
 - `references/decision-log.template.md` — decision table scaffold
+- `references/vault-changelog-protocol.md` — `_os/log.md` and `wiki/log.md` after vault writes
 - `wiki-manager` config for canonical paths to personal workspace
 
-## Tone (always)
+## Tone
 
-Never lecture. Fear-driven drift → offer soul subflow. **End with exactly one question or one next step.** Directness over false reassurance.
+Short and direct. Lectures feel like the system knows better than the person in the room; a question hands agency back. When drift is fear-driven, the soul subflows are available — that path is about presence, not pep talks. Prefer one clear next step or one honest question over false reassurance. End in a way the user can answer in one line.
 
-## Vault Operations
+## Vault operations
 
-Orchestrates the `personal` Obsidian vault. Load this section when operating on the vault directly. Read the vault's `CLAUDE.md` before running any op. All personal content requires confirmation before any write to `research/` or `wiki/`. Never process soul content autonomously.
+Orchestrates the `personal` Obsidian vault. Load when operating on the vault directly. Read the vault’s `CLAUDE.md` first. All writes to `research/` or `wiki/` need explicit confirmation. Soul and reflective moves stay user-led because automating them mislabels feelings as tasks.
 
-Sub-skill resolution order for each op:
+| Op | Workflow |
+|------|----------|
+| `capture` {reflection} | `workflows/vault-capture.md` |
+| `goal` {goal} | `workflows/vault-goal.md` |
+| `promote` {slug} | `workflows/vault-promote.md` |
+| `lint` | *Not in SkillsLoom yet* — `~/.claude/skills/lint/SKILL.md` if installed locally |
+| `query` {question} | *Not in SkillsLoom yet* — `~/.claude/skills/query/SKILL.md` if installed locally |
+
+Sub-skill resolution order for each :sl command:
 1. `~/Obsidian/personal/.skills-override/{sub-skill-name}.md` — subscriber custom
-2. `~/.claude/skills/personal/` — Skillforge default
+2. `~/.claude/skills/personal/` — SkillsLoom default
 
-### op: capture {reflection}
-
-Process a soul reflection or personal raw capture.
-
-1. Read the raw file — do not modify it
-2. Identify themes: fears, desires, wins, commitments, questions
-3. Set `requires_confirmation: true` — always, no exceptions
-4. Present summary to user and ask for approval before writing
-5. On approval: output `research/active/{YYYYMMDD}-{theme-slug}.md`
-6. Append to `_os/log.md`: `## [date] ingest | {theme-slug}`
-7. Report: `Capture drafted → research/active/{theme-slug}.md. Awaiting your review.`
-<!-- sub-skill: workflows/soul-capture.md — not yet authored -->
-
-### op: goal {goal}
-
-Track or update a personal goal.
-
-1. Check `wiki/goals/` for an existing goal page matching the slug
-2. If new: create `research/active/{goal-slug}.md` with goal definition, success criteria, milestones, and current status
-3. If update: read existing wiki page and draft an update to milestones/status
-4. Set `requires_confirmation: true`
-5. On approval: write or update `wiki/goals/{goal-slug}.md`
-6. Append to `_os/log.md`: `## [date] goal | {goal-slug}`
-<!-- sub-skill: workflows/goal-tracker.md — not yet authored -->
-
-### op: promote {slug}
-
-Promote an approved reflection from `approved/` to `wiki/`.
-
-1. Read `approved/{slug}.md` — verify `status: approved`
-2. Detect type from frontmatter (`type: reflection | goal | milestone`)
-3. Create wiki page:
-   - Reflections → `wiki/reflections/{slug}.md`
-   - Goals → `wiki/goals/{slug}.md`
-   - Milestones → `wiki/milestones/{slug}.md`
-4. Update `wiki/index.md` and top-level `index.md`
-5. Append to `wiki/log.md` and `_os/log.md`
-6. Run folder-structure-sync via `~/.claude/skills/wiki-manager/workflows/folder-structure-sync.md`
-   for the wiki subfolder modified
-
-### op: lint
-
-<!-- sub-skill: ~/.claude/skills/lint/SKILL.md — not yet in Skillforge -->
-
-### op: query {question}
-
-<!-- sub-skill: ~/.claude/skills/query/SKILL.md — not yet in Skillforge -->
-
-## Changelog Protocol (vault)
-
-After every vault operation, append to `_os/log.md` at the vault root:
-```
-## [YYYY-MM-DD] {op} | {slug}
-{one-line description of what was done}
-```
-Soul/personal content: always include `requires_confirmation: true` context in the log line.
-For wiki-level operations (promote): also append to `wiki/log.md`.
+Changelog: see `references/vault-changelog-protocol.md` after any vault op that writes.

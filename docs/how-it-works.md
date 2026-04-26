@@ -30,8 +30,8 @@ LLM agents (Claude, Gemini) discover skills by scanning their designated directo
 When a skill is **active** (default), a symlink is created in each of these directories pointing to the skill directory:
 
 ```
-~/.claude/skills/architect  →  $SKILLMANAGER_DIR/skills/architect/
-~/.gemini/skills/architect  →  $SKILLMANAGER_DIR/skills/architect/
+~/.claude/skills/architect-manager  →  $SKILLSLOOM_DIR/skills/architect-manager/
+~/.gemini/skills/architect-manager  →  $SKILLSLOOM_DIR/skills/architect-manager/
 ```
 
 When a skill is not active in metadata (or is `review` / `deactivated` / `decommissioned`), those production symlinks should not exist after `skillmanager audit`. The agent then cannot see the skill.
@@ -46,19 +46,18 @@ There is one rule that must always hold:
 
 The `skillmanager audit` command detects and repairs violations automatically.
 
-## The `SKILLMANAGER_DIR` Variable
+## The `SKILLSLOOM_DIR` variable
 
-All paths are derived from `SKILLMANAGER_DIR` (default: `~/.skillmanager`, configured at install time):
+All paths are derived from `SKILLSLOOM_DIR` (default: `~/.skillsloom`, configured at install time). The CLI still accepts **`SKILLMANAGER_DIR`** as a deprecated alias.
 
 ```bash
-SKILLMANAGER_DIR="${SKILLMANAGER_DIR:-$HOME/.skillmanager}"
-SKILLS_DIR="${SKILLMANAGER_DIR}/skills"
+SKILLS_DIR="${SKILLSLOOM_DIR:-$HOME/.skillsloom}/skills"
 ```
 
 Override it to run against a test environment without touching live data:
 
 ```bash
-SKILLMANAGER_DIR=/tmp/sf-test skillmanager ls
+SKILLSLOOM_DIR=/tmp/sf-test skillmanager ls
 ```
 
 ## CLI vs LLM — Division of Responsibility
@@ -77,7 +76,7 @@ Git is available in both because the CLI is used outside of an LLM session (e.g.
 
 ## Why No Database?
 
-- **Observability**: `skillmanager ls` or `ls $SKILLMANAGER_DIR/skills/` shows the complete system state instantly.
+- **Observability**: `skillmanager ls` or `ls $SKILLSLOOM_DIR/skills/` shows the complete system state instantly.
 - **Durability**: No corruption risk — there's nothing to corrupt beyond a directory rename.
 - **Portability**: The entire skill set is a directory tree. Copy it, version it, back it up with standard tools.
 - **Debuggability**: `find`, `ls -la`, and `readlink` are sufficient to diagnose any issue.

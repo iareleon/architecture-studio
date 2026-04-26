@@ -13,7 +13,7 @@ Copy these from the `skill-manager` skill (this directory) to scaffold new skill
 | `workflow-file-template.md` | Body for a new `workflows/*.md` file |
 | `workflow-fragment.md` | Optional legacy-style `SKILL.md` body; prefer a thin `SKILL.md` plus `workflows/` |
 | `reference-doc.template.md` | A lazy-loaded `references/*.md` file |
-| `persona/model.md` | Local persona file in `$SKILLMANAGER_DIR` (not committed; see install script) |
+| `persona/model.md` | Local persona template; installed copy lives at `$SKILLSLOOM_DIR/model.md` (not committed; see install script) |
 | `persona/system-skills-always-on.md` | System capabilities block (always-on install mode) |
 | `persona/system-skills-manual.md` | System capabilities block (manual install mode) |
 

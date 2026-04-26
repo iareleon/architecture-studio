@@ -1,6 +1,6 @@
 ---
 name: brain-manager
-description: Detects memory-change intent in user input and updates the correct workspace memory file with explicit user approval. Invoke directly or trigger automatically from natural language patterns.
+description: "Workspace memory and project convention updates — map intent to the right memory file, draft changes, and apply only with explicit user approval. Use when the user says things like \"remember that...\", \"update CLAUDE.md\", \"I decided we will...\", \"make this the default\", or \"note that for the project\" — even if they do not say \"memory.\""
 metadata:
   version: "1.1"
   disable-model-invocation: true
@@ -47,7 +47,7 @@ If the target is ambiguous, ask: project vs user-global vs which skill `persona/
 
 - **Directive hygiene:** root instruction edits are high-risk—summarise impact and get approval.
 - **Change / discovery logging:** use project trail where the repo keeps it.
-- **Librarian templates:** `references/librarian-templates/` (optional). Adapt to `${SKILLFORGE_DIR}`; no proprietary path assumptions.
+- **Librarian templates:** `references/librarian-templates/` (optional). Adapt to `${SKILLSLOOM_DIR}`; no proprietary path assumptions.
 
 ## References
 

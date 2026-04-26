@@ -18,7 +18,7 @@ Usage:
   python3 scripts/skills_audit.py [--skills-dir PATH] [--install-dir PATH]
 
   --skills-dir   Path to the skills source directory (default: ./skills relative to git root)
-  --install-dir  Path to the installed skillmanager dir (default: ~/.skillmanager)
+  --install-dir  Path to the installed SkillsLoom dir (default: ~/.skillsloom)
 
 Exit 0 = clean or warnings only, 1 = failures found
 """
@@ -306,9 +306,12 @@ def _resolve_skills_dir(arg: str | None) -> Path:
     if arg:
         return Path(arg).expanduser()
     # Try install dir first, fall back to repo
-    install = Path.home() / ".skillmanager" / "skills"
+    install = Path.home() / ".skillsloom" / "skills"
     if install.is_dir():
         return install
+    legacy = Path.home() / ".skillmanager" / "skills"
+    if legacy.is_dir():
+        return legacy
     # Fall back to repo-relative
     import subprocess
     r = subprocess.run(["git", "rev-parse", "--show-toplevel"],

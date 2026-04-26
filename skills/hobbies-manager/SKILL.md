@@ -1,6 +1,6 @@
 ---
 name: hobbies-manager
-description: Orchestrates the hobbies Obsidian vault — photography shoot reviews, gear notes, and promotion to wiki. Invoke for any hobbies vault operation.
+description: "Hobbies Obsidian vault — photography (shoots, reviews, technique), gear notes, and promotion to the wiki. Use when the user logs a session, rates shots, plans gear, or curates creative work into the wiki — even if the note is a quick field capture without \"hobby\" in the title."
 metadata:
   version: "1.0"
   disable-model-invocation: true
@@ -17,11 +17,11 @@ hobbies vault session after reading the vault's `CLAUDE.md`.
 
 For each sub-skill invocation, resolve in order:
 1. `~/Obsidian/hobbies/.skills-override/{sub-skill-name}.md` — subscriber custom
-2. `~/.claude/skills/hobbies-manager/` — Skillforge default
+2. `~/.claude/skills/hobbies-manager/` — SkillsLoom default
 
 ## Operations
 
-### op: review {shoot}
+### :sl review {shoot}
 
 Log and review a photography shoot.
 
@@ -31,7 +31,7 @@ Log and review a photography shoot.
 4. Append to `_os/log.md`: `## [date] ingest | {shoot-slug}-review`
 5. Report: `Review drafted → research/active/{shoot-slug}-review.md`
 
-### op: promote {slug}
+### :sl promote {slug}
 
 Promote an approved shoot review or gear note from `approved/` to `wiki/`.
 

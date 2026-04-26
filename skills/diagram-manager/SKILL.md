@@ -1,9 +1,10 @@
 ---
 name: diagram-manager
-description: Diagrams — route to Mermaid code or to type/design guidance. Invoke for flows, architecture visuals, or Mermaid in markdown.
+description: "Diagrams — Mermaid and diagram-type guidance (flow, sequence, state, ER, C4). Use when the user wants to draw, sketch, \"show me the flow\", drop a mermaid block in a doc, or pick the right chart type — even if they only say \"visualise this\" or paste bullet points."
 metadata:
   version: "1.0"
   disable-model-invocation: true
+  formerly: diagrammer
 ---
 # Diagrammer (router)
 

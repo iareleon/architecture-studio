@@ -1,6 +1,6 @@
 # Scripts
 
-CLI and maintenance scripts for Skill Forge. All scripts are written in Python 3 and run on macOS, Linux, and Windows without any additional dependencies beyond the Python standard library.
+CLI and maintenance scripts for SkillsLoom. All scripts are written in Python 3 and run on macOS, Linux, and Windows without any additional dependencies beyond the Python standard library.
 
 ---
 
@@ -32,17 +32,17 @@ python3 scripts/skillmanager.py ls
 
 ### `install.py`
 
-Interactive installer. Run once to set up Skill Forge for the first time, or again to update an existing install.
+Interactive installer. Run once to set up SkillsLoom for the first time, or again to update an existing install.
 
 ```bash
 python3 scripts/install.py
 ```
 
 What it does (summary):
-1. Asks where to install (default: `~/.skillmanager`) and which LLMs to use
+1. Asks where to install (default: `~/.skillsloom`) and which LLMs to use
 2. Detects available tools (git, gh, glab, gcloud, terraform)
-3. Creates `~/.skillmanager/config.yaml` with your choices
-4. Copies starter skills into `$SKILLMANAGER_DIR/skills/`
+3. Creates `~/.skillsloom/config.yaml` with your choices
+4. Copies starter skills into `$SKILLSLOOM_DIR/skills/`
 5. Sets up optional `model.md` persona
 6. Installs `skillmanager` to `~/.local/bin/` (Unix) or `%LOCALAPPDATA%\Programs\skillmanager\` (Windows)
 7. Runs `skillmanager audit` (symlinks from each skill's `metadata.status`)
@@ -99,7 +99,7 @@ python3 scripts/test_env_teardown.py
 
 ### `hooks/`
 
-Git hooks for this repository. Used during development of Skill Forge itself.
+Git hooks for this repository. Used during development of SkillsLoom itself.
 
 To install the hooks:
 ```bash

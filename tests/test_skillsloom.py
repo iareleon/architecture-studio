@@ -1,4 +1,4 @@
-"""test_skillforge.py — pytest tests for the Skill Forge CLI (skillmanager.py)
+"""test_skillforge.py — pytest tests for the SkillsLoom CLI (skillmanager.py)
 
 Prerequisites:
   pip install pytest
@@ -79,6 +79,7 @@ def env(tmp_path: Path):
         "claude_staging": claude_staging,
         "gemini_staging": gemini_staging,
         "env": {
+            "SKILLSLOOM_DIR": str(skillmanager_dir),
             "SKILLMANAGER_DIR": str(skillmanager_dir),
             "CLAUDE_SKILLS_DIR": str(claude_skills),
             "GEMINI_SKILLS_DIR": str(gemini_skills),

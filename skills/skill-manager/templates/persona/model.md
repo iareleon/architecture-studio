@@ -1,10 +1,10 @@
 <!-- PERSONAL PERSONA TEMPLATE
      This file is your personal AI assistant persona. It is LOCAL — never commit it to Git.
-     Save it to ~/.skillmanager/persona/model.md after filling it in.
-     The install script creates a symlink from your LLM's context file to this location.
+     Save it to ~/.skillsloom/model.md after filling it in.
+     The install script copies the template there and links your LLM context file to FIRST-BRAIN.md.
 
      HOW TO USE:
-     1. Copy this file to ~/.skillmanager/persona/model.md
+     1. After install, edit ~/.skillsloom/model.md (or let the installer create it from this template)
      2. Replace every <PLACEHOLDER> with your own details
      3. Delete comment blocks like this one when done
      4. The install script creates the symlink automatically — no further steps needed

@@ -8,7 +8,7 @@ See also **[Domain (skill) layout](domain-layout.md)** — research-backed stand
 
 ## Directory naming
 
-Every skill is a directory under `$SKILLMANAGER_DIR/skills/`. The **folder name** is the skill id (kebab-case). There is no `-sme` or `-wf` suffix — merge former SME and workflow into one tree when they described the same domain.
+Every skill is a directory under `$SKILLSLOOM_DIR/skills/`. The **folder name** is the skill id (kebab-case). There is no `-sme` or `-wf` suffix — merge former SME and workflow into one tree when they described the same domain.
 
 **Name rules**
 

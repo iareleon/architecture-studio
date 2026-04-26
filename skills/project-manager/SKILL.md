@@ -1,6 +1,6 @@
 ---
 name: project-manager
-description: Create, update, and query project tasks in your configured task management tool. Route agent blockers, sprint cards, and proposals to the correct list. Invoke when tracking work, surfacing blockers, or managing the project task queue.
+description: "Create, update, and query work in the configured task tool; route blockers, sprint items, and proposals to the right list. Use when the user says track this, add a card, what is blocked, move it to the sprint, or file a follow-up for the team — even if they never name Linear/Jira/Asana and only describe a next step."
 metadata:
   version: "1.1"
   disable-model-invocation: true

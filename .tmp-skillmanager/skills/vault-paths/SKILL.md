@@ -28,7 +28,7 @@ metadata:
 | Social / long-form content | Content workspace |
 | Strategy / company content | Company workspace |
 | Delivery / project tracking | Project workspace |
-| Skills install | `~/.skillmanager/skills/` or Skill Forge clone |
+| Skills install | `~/.skillmanager/skills/` or SkillsLoom clone |
 
 (Replace with your actual paths in `references/vault-map.md`.)
 

@@ -8,7 +8,7 @@ Every skill is only `skills/<name>/`. Set **`metadata.status`** in `SKILL.md` to
 
 `skillmanager` symlinks every **active** skill into your LLM skills directory so the whole tree (including `workflows/` and `memory/`) is readable when invoked.
 
-**Intent:** a skill should **augment** a human (clear procedures, SME context, drafts you approve). **Canonical knowledge** and routing live in your wikis—e.g. Obsidian `meta` (inbox, `_os/`, `wiki/`) and domain vaults—plus Knowledge OS `classify` / `process-inbox` when you use that pipeline.
+**Intent:** a skill should **augment** a human (clear procedures, SME context, drafts you approve). **Canonical knowledge** and routing live in your wikis—e.g. Obsidian `meta` (inbox, `_os/`, `wiki/`) and domain vaults—driven manually via **`wiki-manager`** workflows in a terminal until any post-UAT automation is explicitly scoped.
 
 ## Create a new skill
 

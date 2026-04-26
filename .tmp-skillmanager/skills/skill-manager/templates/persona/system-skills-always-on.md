@@ -19,7 +19,7 @@ Potential new skill: <name> (<type>) — <one-line description>.
 Create now / Defer / Decline?
 ```
 - **Create now** → reply: "Activate `skill-manager` to create this skill."
-- **Defer** → write stub to `${SKILLMANAGER_DIR}/skills/skill-manager/references/deferred-skill-plans/<name>-YYYY-MM-DD.md`, confirm path
+- **Defer** → write stub to `${SKILLSLOOM_DIR}/skills/skill-manager/references/deferred-skill-plans/<name>-YYYY-MM-DD.md`, confirm path
 - **Decline** → suppress for this session only; do not persist
 
 ### Memory Management
